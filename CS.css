@@ -1,0 +1,110 @@
+/* ==========================================
+   全体の設定
+   ========================================== */
+body {
+    font-family: "Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif;
+    background-color: #f0f2f5; /* 背景色：薄いグレー */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+    color: #333;
+}
+
+/* ==========================================
+   ガチャのメイン枠（カード）
+   ========================================== */
+.gacha-container {
+    background-color: #fff;
+    width: 90%;
+    max-width: 400px; /* スマホでもPCでも見やすい幅 */
+    padding: 20px;
+    border-radius: 15px; /* 角を丸く */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); /* 影をつけて浮き上がらせる */
+    text-align: center;
+}
+
+header h1 {
+    margin: 0;
+    font-size: 24px;
+    color: #4a90e2;
+}
+
+header p {
+    font-size: 12px;
+    color: #666;
+    margin-top: 5px;
+}
+
+/* ==========================================
+   結果表示エリア
+   ========================================== */
+.result-area {
+    background-color: #fafafa;
+    border: 2px dashed #ddd; /* 点線の枠 */
+    border-radius: 10px;
+    margin: 20px 0;
+    padding: 20px;
+    min-height: 250px; /* 画像がない時も高さを確保 */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+/* キャラクター画像 */
+#character-img {
+    max-width: 100%; /* 枠からはみ出さないようにする */
+    max-height: 300px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    /* アニメーション：ふわっと表示 */
+    animation: fadeIn 0.5s ease-in;
+}
+
+/* レアリティのテキスト */
+#rarity-text {
+    font-size: 18px;
+    font-weight: bold;
+    margin-top: 15px;
+    margin-bottom: 0;
+}
+
+/* ==========================================
+   ボタンのデザイン
+   ========================================== */
+.gacha-btn {
+    background-color: #ff6b6b; /* ポップな赤色 */
+    color: white;
+    border: none;
+    padding: 15px 40px;
+    font-size: 18px;
+    font-weight: bold;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: transform 0.1s, background-color 0.2s;
+    box-shadow: 0 4px 0 #d64545; /* 立体的な影 */
+}
+
+/* ボタンを押した時の動き */
+.gacha-btn:active {
+    transform: translateY(4px); /* 押し込む動き */
+    box-shadow: none;
+}
+
+.gacha-btn:hover {
+    background-color: #ff5252;
+}
+
+/* プレースホルダー（最初の文字） */
+.placeholder p {
+    color: #aaa;
+    font-weight: bold;
+}
+
+/* アニメーション定義 */
+@keyframes fadeIn {
+    from { opacity: 0; transform: scale(0.9); }
+    to { opacity: 1; transform: scale(1); }
+}

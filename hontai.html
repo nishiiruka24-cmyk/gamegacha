@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ガチャシミュレーター</title>
+    <link rel="stylesheet" href="CS.css">
+</head>
+
+<body>
+
+    <div class="gacha-container">
+        <header>
+            <h1>運命のガチャ</h1>
+            <p>SSR, SR, R, N が出現します</p>
+        </header>
+
+        <div class="result-area" id="result-area">
+            <div class="placeholder">
+                <p>ボタンを押してガチャを引こう！</p>
+            </div>
+            <img id="character-img" src="" alt="キャラクター画像" style="display:none;">
+            <p id="rarity-text"></p>
+        </div>
+
+        <div class="controls">
+            <button id="draw-btn" class="gacha-btn">ガチャを引く</button>
+        </div>
+    </div>
+
+    <script src="java.js"></script>
+</body>
+
+</html>
