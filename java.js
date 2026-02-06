@@ -1,107 +1,141 @@
 // ==========================================
-// 設定エリア：ここを変更するだけでキャラを増減できます
+// 設定エリア
 // ==========================================
-
-// キャラクターのリスト
-// id: 画像ファイル名（例: '001' -> character/001.png）
-// rarity: レアリティ (SSR, SR, R)
 const characterList = [
-    { id: '001', rarity: 'SSR' }, // シャドウ (例)
+    { id: '001', rarity: 'SSR' },
     { id: '002', rarity: 'SR' },
     { id: '003', rarity: 'R' },
     { id: '004', rarity: 'R' },
     { id: '005', rarity: 'R' },
-    // ★新しいキャラを追加するときは、ここに
-    // { id: '006', rarity: 'SSR' }, 
-    // のように行を足すだけでOKです。
 ];
 
-// ガチャの排出率（合計が100になるように設定）
-const dropRates = {
-    SSR: 5,  // 5%
-    SR: 15,  // 15%
-    R: 80    // 80%
-};
+const dropRates = { SSR: 5, SR: 15, R: 80 };
 
 // ==========================================
-// ガチャの仕組みエリア（ここは基本触らなくてOK）
+// 要素の取得
+// ==========================================
+const mainScreen = document.getElementById('main-screen');
+const resultScreen = document.getElementById('result-screen');
+const resultGrid = document.getElementById('result-grid');
+
+const overlay = document.getElementById('fullscreen-overlay');
+const fullscreenImg = document.getElementById('fullscreen-img');
+const skipBtn = document.getElementById('skip-btn');
+
+// ==========================================
+// 状態管理用変数
+// ==========================================
+let currentResults = []; // 引いた結果のリスト
+let currentIndex = 0;    // 今何枚目を表示しているか
+
+// ==========================================
+// イベントリスナー（ボタン操作など）
 // ==========================================
 
-const drawBtn = document.getElementById('draw-btn');
-const resultImg = document.getElementById('character-img');
-const resultText = document.getElementById('rarity-text');
-const resultArea = document.getElementById('result-area');
+// ガチャボタン
+document.getElementById('draw-1-btn').addEventListener('click', () => startGacha(1));
+document.getElementById('draw-10-btn').addEventListener('click', () => startGacha(10));
 
-// ボタンがクリックされた時の処理
-drawBtn.addEventListener('click', function() {
-    
-    // 1. 抽選でレアリティを決める
-    const rarity = pickRarity();
-    
-    // 2. 決まったレアリティの中からキャラをランダムに1体選ぶ
-    const character = pickCharacterByRarity(rarity);
+// オーバーレイ（画像）クリック時の処理
+overlay.addEventListener('click', (e) => {
+    // スキップボタンを押したときは、この処理を無視する
+    if (e.target === skipBtn) return;
 
-    // 3. 結果を画面に表示する
-    displayResult(character);
+    showNextImage();
 });
 
-// レアリティを抽選する関数
+// スキップボタン
+skipBtn.addEventListener('click', () => {
+    showResultList(); // 強制的に結果一覧へ
+});
+
+// 結果一覧画面をクリックしたらタイトルに戻る
+resultScreen.addEventListener('click', () => {
+    resetToTitle();
+});
+
+// ==========================================
+// ガチャのロジック関数
+// ==========================================
+
+// 1. ガチャを開始する
+function startGacha(times) {
+    // 結果を生成して保存
+    currentResults = [];
+    for (let i = 0; i < times; i++) {
+        const rarity = pickRarity();
+        currentResults.push(pickCharacterByRarity(rarity));
+    }
+
+    // 状態をリセットして演出開始
+    currentIndex = 0;
+    mainScreen.classList.add('hidden'); // タイトル消す
+    overlay.classList.remove('hidden'); // 演出画面出す
+
+    // 1枚目を表示
+    updateOverlayImage();
+}
+
+// 2. 次の画像を表示する（クリックされると呼ばれる）
+function showNextImage() {
+    currentIndex++; // 次の番号へ
+
+    if (currentIndex < currentResults.length) {
+        // まだ画像があるなら表示更新
+        updateOverlayImage();
+    } else {
+        // もう画像がないなら結果一覧へ
+        showResultList();
+    }
+}
+
+// 3. オーバーレイの画像を更新する処理
+function updateOverlayImage() {
+    const char = currentResults[currentIndex];
+    // 画像を一瞬消して再表示することでアニメーションをリセットさせる小技
+    fullscreenImg.style.animation = 'none';
+    fullscreenImg.offsetHeight; /* trigger reflow */
+    fullscreenImg.style.animation = 'fadeIn 0.3s ease-out';
+
+    fullscreenImg.src = `character/${char.id}.png`;
+}
+
+// 4. 結果一覧画面を表示する
+function showResultList() {
+    overlay.classList.add('hidden');       // 演出消す
+    resultScreen.classList.remove('hidden'); // 結果一覧出す
+
+    // グリッドの中身を作る
+    resultGrid.innerHTML = '';
+    currentResults.forEach(char => {
+        const card = document.createElement('div');
+        card.className = `result-card rarity-${char.rarity}`;
+        card.innerHTML = `
+            <img src="character/${char.id}.png">
+            <p>${char.rarity}</p>
+        `;
+        resultGrid.appendChild(card);
+    });
+}
+
+// 5. タイトル画面に戻る
+function resetToTitle() {
+    resultScreen.classList.add('hidden');
+    mainScreen.classList.remove('hidden');
+}
+
+// ==========================================
+// 抽選ロジック（変更なし）
+// ==========================================
 function pickRarity() {
-    const randomNum = Math.random() * 100; // 0〜99.99...の乱数
-    let currentTotal = 0;
-
-    // SSRの判定
-    currentTotal += dropRates.SSR;
-    if (randomNum < currentTotal) return 'SSR';
-
-    // SRの判定
-    currentTotal += dropRates.SR;
-    if (randomNum < currentTotal) return 'SR';
-
-    // それ以外はR
+    const r = Math.random() * 100;
+    if (r < dropRates.SSR) return 'SSR';
+    if (r < dropRates.SSR + dropRates.SR) return 'SR';
     return 'R';
 }
 
-// 指定されたレアリティのキャラリストからランダムに1体選ぶ関数
 function pickCharacterByRarity(rarity) {
-    // そのレアリティに該当するキャラだけを抽出
-    const filteredList = characterList.filter(char => char.rarity === rarity);
-
-    // もしそのレアリティのキャラが登録されていなかった場合のエラー回避
-    if (filteredList.length === 0) {
-        console.error(`${rarity}のキャラクターが登録されていません！`);
-        return null; 
-    }
-
-    // ランダムに1つ選ぶ
-    const randomIndex = Math.floor(Math.random() * filteredList.length);
-    return filteredList[randomIndex];
-}
-
-// 画面表示を更新する関数
-function displayResult(character) {
-    if (!character) return; // キャラが選ばれなかった場合は何もしない
-
-    // 画像のパスを設定 (characterフォルダの中の 001.png など)
-    const imagePath = `character/${character.id}.png`;
-
-    // 画像を表示設定
-    resultImg.src = imagePath;
-    resultImg.style.display = 'block'; // 画像を表示状態にする
-    
-    // プレースホルダー（最初のメッセージ）を隠す
-    const placeholder = document.querySelector('.placeholder');
-    if (placeholder) placeholder.style.display = 'none';
-
-    // レアリティとIDを表示
-    resultText.innerHTML = `レアリティ: <strong>${character.rarity}</strong>`;
-    
-    // レアリティごとに文字色を変える演出
-    if (character.rarity === 'SSR') {
-        resultText.style.color = '#FFD700'; // 金色
-    } else if (character.rarity === 'SR') {
-        resultText.style.color = '#C0C0C0'; // 銀色
-    } else {
-        resultText.style.color = '#333';    // 黒
-    }
+    const list = characterList.filter(c => c.rarity === rarity);
+    if (list.length === 0) return { id: '000', rarity: 'Error' }; // エラー回避
+    return list[Math.floor(Math.random() * list.length)];
 }

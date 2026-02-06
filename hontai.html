@@ -10,23 +10,32 @@
 
 <body>
 
-    <div class="gacha-container">
+    <div class="gacha-container" id="main-screen">
         <header>
             <h1>運命のガチャ</h1>
-            <p>SSR, SR, R, N が出現します</p>
+            <p>SSR, SR, R が出現します</p>
         </header>
 
-        <div class="result-area" id="result-area">
-            <div class="placeholder">
-                <p>ボタンを押してガチャを引こう！</p>
-            </div>
-            <img id="character-img" src="" alt="キャラクター画像" style="display:none;">
-            <p id="rarity-text"></p>
+        <div class="placeholder-area">
+            <p>さあ、運命を試そう</p>
         </div>
 
         <div class="controls">
-            <button id="draw-btn" class="gacha-btn">ガチャを引く</button>
+            <button id="draw-1-btn" class="gacha-btn single">単発</button>
+            <button id="draw-10-btn" class="gacha-btn multi">10連</button>
         </div>
+    </div>
+
+    <div id="result-screen" class="hidden">
+        <h2 style="color:white; text-align:center; margin-top:20px;">ガチャ結果</h2>
+        <p style="color:#ddd; text-align:center;">画面をクリックして戻る</p>
+        <div class="result-grid" id="result-grid">
+        </div>
+    </div>
+
+    <div id="fullscreen-overlay" class="hidden">
+        <button id="skip-btn">SKIP >></button>
+        <img id="fullscreen-img" src="" alt="Character">
     </div>
 
     <script src="java.js"></script>
