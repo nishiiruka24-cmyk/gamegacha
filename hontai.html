@@ -12,30 +12,37 @@
 
     <div class="gacha-container" id="main-screen">
         <header>
-            <h1>運命のガチャ</h1>
-            <p>SSR, SR, R が出現します</p>
+            <h1>始まりの出会い</h1>
+            <p>期間限定キャラをGETしよう！</p>
         </header>
 
         <div class="placeholder-area">
-            <p>さあ、運命を試そう</p>
         </div>
 
         <div class="controls">
-            <button id="draw-1-btn" class="gacha-btn single">単発</button>
+            <button id="draw-1-btn" class="gacha-btn single">1連</button>
             <button id="draw-10-btn" class="gacha-btn multi">10連</button>
         </div>
     </div>
 
     <div id="result-screen" class="hidden">
         <h2 style="color:white; text-align:center; margin-top:20px;">ガチャ結果</h2>
-        <p style="color:#ddd; text-align:center;">画面をクリックして戻る</p>
+        <p style="color:#ddd; text-align:center; font-size:12px;">背景クリックでタイトルへ戻る / カードクリックで拡大</p>
         <div class="result-grid" id="result-grid">
         </div>
     </div>
 
     <div id="fullscreen-overlay" class="hidden">
         <button id="skip-btn">SKIP >></button>
+
+        <div id="flash-effect"></div>
+
         <img id="fullscreen-img" src="" alt="Character">
+    </div>
+
+    <div id="image-modal" class="hidden">
+        <span class="close-hint">クリックして閉じる</span>
+        <img id="modal-img" src="">
     </div>
 
     <script src="java.js"></script>

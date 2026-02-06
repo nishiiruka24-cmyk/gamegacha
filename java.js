@@ -3,10 +3,11 @@
 // ==========================================
 const characterList = [
     { id: '001', rarity: 'SSR' },
-    { id: '002', rarity: 'SR' },
-    { id: '003', rarity: 'R' },
-    { id: '004', rarity: 'R' },
+    { id: '002', rarity: 'SSR' },
+    { id: '003', rarity: 'SSR' },
+    { id: '004', rarity: 'SR' },
     { id: '005', rarity: 'R' },
+    // 必要に応じてここに行を足してください
 ];
 
 const dropRates = { SSR: 5, SR: 15, R: 80 };
@@ -21,6 +22,10 @@ const resultGrid = document.getElementById('result-grid');
 const overlay = document.getElementById('fullscreen-overlay');
 const fullscreenImg = document.getElementById('fullscreen-img');
 const skipBtn = document.getElementById('skip-btn');
+const flashEffect = document.getElementById('flash-effect'); // 光る演出用
+
+const imageModal = document.getElementById('image-modal');
+const modalImg = document.getElementById('modal-img');
 
 // ==========================================
 // 状態管理用変数
@@ -29,16 +34,16 @@ let currentResults = []; // 引いた結果のリスト
 let currentIndex = 0;    // 今何枚目を表示しているか
 
 // ==========================================
-// イベントリスナー（ボタン操作など）
+// イベントリスナー（クリック操作などの登録）
 // ==========================================
 
 // ガチャボタン
 document.getElementById('draw-1-btn').addEventListener('click', () => startGacha(1));
 document.getElementById('draw-10-btn').addEventListener('click', () => startGacha(10));
 
-// オーバーレイ（画像）クリック時の処理
+// 全画面演出中のクリック（次の画像へ）
 overlay.addEventListener('click', (e) => {
-    // スキップボタンを押したときは、この処理を無視する
+    // スキップボタンを押したときは、ここでの処理を無視
     if (e.target === skipBtn) return;
 
     showNextImage();
@@ -46,37 +51,42 @@ overlay.addEventListener('click', (e) => {
 
 // スキップボタン
 skipBtn.addEventListener('click', () => {
-    showResultList(); // 強制的に結果一覧へ
+    showResultList(); // 結果一覧へジャンプ
 });
 
-// 結果一覧画面をクリックしたらタイトルに戻る
+// 結果一覧画面の背景クリック（タイトルへ戻る）
 resultScreen.addEventListener('click', () => {
     resetToTitle();
+});
+
+// 拡大画像の閉じるクリック
+imageModal.addEventListener('click', () => {
+    imageModal.classList.add('hidden');
 });
 
 // ==========================================
 // ガチャのロジック関数
 // ==========================================
 
-// 1. ガチャを開始する
+// 1. ガチャを開始する処理
 function startGacha(times) {
-    // 結果を生成して保存
+    // 抽選を行う
     currentResults = [];
     for (let i = 0; i < times; i++) {
         const rarity = pickRarity();
         currentResults.push(pickCharacterByRarity(rarity));
     }
 
-    // 状態をリセットして演出開始
+    // 画面切り替え（タイトルを隠して、演出を表示）
     currentIndex = 0;
-    mainScreen.classList.add('hidden'); // タイトル消す
-    overlay.classList.remove('hidden'); // 演出画面出す
+    mainScreen.classList.add('hidden');
+    overlay.classList.remove('hidden');
 
     // 1枚目を表示
     updateOverlayImage();
 }
 
-// 2. 次の画像を表示する（クリックされると呼ばれる）
+// 2. 次の画像を表示する処理
 function showNextImage() {
     currentIndex++; // 次の番号へ
 
@@ -89,43 +99,76 @@ function showNextImage() {
     }
 }
 
-// 3. オーバーレイの画像を更新する処理
+// 3. 全画面画像を更新する処理（光る演出付き）
 function updateOverlayImage() {
     const char = currentResults[currentIndex];
-    // 画像を一瞬消して再表示することでアニメーションをリセットさせる小技
-    fullscreenImg.style.animation = 'none';
-    fullscreenImg.offsetHeight; /* trigger reflow */
-    fullscreenImg.style.animation = 'fadeIn 0.3s ease-out';
 
-    fullscreenImg.src = `character/${char.id}.png`;
+    // 一旦画像を透明にする（光っている間に切り替えるため）
+    fullscreenImg.style.opacity = '0';
+
+    // フラッシュの色を設定（SSRなら金、SRなら銀など）
+    if (flashEffect) {
+        flashEffect.className = ''; // クラスをリセット
+        flashEffect.classList.add(`flash-${char.rarity}`);
+
+        // アニメーションをリセットして再生（強制再描画テクニック）
+        flashEffect.classList.remove('play-flash');
+        void flashEffect.offsetWidth; // リフロー発生
+        flashEffect.classList.add('play-flash');
+    }
+
+    // 少し遅れて画像を表示（光のエフェクトに合わせる）
+    setTimeout(() => {
+        fullscreenImg.src = `character/${char.id}.png`;
+
+        // 画像のフェードインアニメをリセットして再生
+        fullscreenImg.style.animation = 'none';
+        fullscreenImg.offsetHeight;
+        fullscreenImg.style.animation = 'fadeIn 0.5s ease-out forwards';
+
+        fullscreenImg.style.opacity = '1';
+    }, 200); // 0.2秒後に画像表示
 }
 
-// 4. 結果一覧画面を表示する
+// 4. 結果一覧画面を表示する処理
 function showResultList() {
-    overlay.classList.add('hidden');       // 演出消す
-    resultScreen.classList.remove('hidden'); // 結果一覧出す
+    overlay.classList.add('hidden');       // 演出画面を隠す
+    resultScreen.classList.remove('hidden'); // 結果一覧を表示
 
-    // グリッドの中身を作る
+    // グリッドの中身を一度リセット
     resultGrid.innerHTML = '';
+
+    // 結果の数だけカードを作成
     currentResults.forEach(char => {
         const card = document.createElement('div');
         card.className = `result-card rarity-${char.rarity}`;
+
+        // カードのHTML（画像とレアリティ文字）
         card.innerHTML = `
             <img src="character/${char.id}.png">
             <p>${char.rarity}</p>
         `;
+
+        // ★重要：カードをクリックした時の拡大表示処理
+        card.addEventListener('click', (e) => {
+            e.stopPropagation(); // 親要素（背景）へのクリック通知を止める（タイトルに戻らないようにする）
+
+            modalImg.src = `character/${char.id}.png`; // 拡大画像のパス設定
+            imageModal.classList.remove('hidden');     // モーダルを表示
+        });
+
         resultGrid.appendChild(card);
     });
 }
 
-// 5. タイトル画面に戻る
+// 5. タイトル画面に戻る処理
 function resetToTitle() {
     resultScreen.classList.add('hidden');
     mainScreen.classList.remove('hidden');
 }
 
 // ==========================================
-// 抽選ロジック（変更なし）
+// 抽選ロジック（確率計算など）
 // ==========================================
 function pickRarity() {
     const r = Math.random() * 100;
@@ -135,7 +178,15 @@ function pickRarity() {
 }
 
 function pickCharacterByRarity(rarity) {
+    // そのレアリティに該当するキャラだけ抽出
     const list = characterList.filter(c => c.rarity === rarity);
-    if (list.length === 0) return { id: '000', rarity: 'Error' }; // エラー回避
+
+    // もしキャラが登録されていない場合のエラー回避
+    if (list.length === 0) {
+        console.error(`${rarity}のキャラがいません。characterListを確認してください。`);
+        return { id: '000', rarity: 'Error' };
+    }
+
+    // ランダムに1体選ぶ
     return list[Math.floor(Math.random() * list.length)];
 }
