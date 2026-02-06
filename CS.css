@@ -1,110 +1,178 @@
 /* ==========================================
-   全体の設定
+   全体設定
    ========================================== */
 body {
-    font-family: "Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif;
-    background-color: #f0f2f5; /* 背景色：薄いグレー */
+    font-family: sans-serif;
+    background-color: #222;
+    /* 映画館のように暗く */
+    margin: 0;
+    overflow: hidden;
+    /* スクロール禁止 */
+    height: 100vh;
     display: flex;
     justify-content: center;
     align-items: center;
-    min-height: 100vh;
-    margin: 0;
-    color: #333;
+}
+
+/* 表示・非表示の制御クラス */
+.hidden {
+    display: none !important;
 }
 
 /* ==========================================
-   ガチャのメイン枠（カード）
+   1. メイン画面（タイトルとボタン）
    ========================================== */
 .gacha-container {
     background-color: #fff;
     width: 90%;
-    max-width: 400px; /* スマホでもPCでも見やすい幅 */
-    padding: 20px;
-    border-radius: 15px; /* 角を丸く */
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); /* 影をつけて浮き上がらせる */
+    max-width: 500px;
+    padding: 30px;
+    border-radius: 15px;
     text-align: center;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
 }
 
-header h1 {
-    margin: 0;
-    font-size: 24px;
-    color: #4a90e2;
+.placeholder-area {
+    margin: 40px 0;
+    color: #888;
 }
 
-header p {
-    font-size: 12px;
-    color: #666;
-    margin-top: 5px;
-}
-
-/* ==========================================
-   結果表示エリア
-   ========================================== */
-.result-area {
-    background-color: #fafafa;
-    border: 2px dashed #ddd; /* 点線の枠 */
-    border-radius: 10px;
-    margin: 20px 0;
-    padding: 20px;
-    min-height: 250px; /* 画像がない時も高さを確保 */
+.controls {
     display: flex;
-    flex-direction: column;
     justify-content: center;
-    align-items: center;
+    gap: 20px;
 }
 
-/* キャラクター画像 */
-#character-img {
-    max-width: 100%; /* 枠からはみ出さないようにする */
-    max-height: 300px;
-    border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-    /* アニメーション：ふわっと表示 */
-    animation: fadeIn 0.5s ease-in;
-}
-
-/* レアリティのテキスト */
-#rarity-text {
-    font-size: 18px;
-    font-weight: bold;
-    margin-top: 15px;
-    margin-bottom: 0;
-}
-
-/* ==========================================
-   ボタンのデザイン
-   ========================================== */
 .gacha-btn {
-    background-color: #ff6b6b; /* ポップな赤色 */
-    color: white;
     border: none;
-    padding: 15px 40px;
+    padding: 15px 30px;
     font-size: 18px;
     font-weight: bold;
     border-radius: 50px;
     cursor: pointer;
-    transition: transform 0.1s, background-color 0.2s;
-    box-shadow: 0 4px 0 #d64545; /* 立体的な影 */
-}
-
-/* ボタンを押した時の動き */
-.gacha-btn:active {
-    transform: translateY(4px); /* 押し込む動き */
-    box-shadow: none;
+    color: white;
+    transition: 0.2s;
 }
 
 .gacha-btn:hover {
-    background-color: #ff5252;
+    opacity: 0.8;
 }
 
-/* プレースホルダー（最初の文字） */
-.placeholder p {
-    color: #aaa;
+.single {
+    background-color: #4CAF50;
+}
+
+.multi {
+    background-color: #ff6b6b;
+}
+
+/* ==========================================
+   2. 全画面演出オーバーレイ
+   ========================================== */
+#fullscreen-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: black;
+    z-index: 1000;
+    /* 最前面 */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    /* クリックできることを示す */
+}
+
+#fullscreen-img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    /* 1920x1060の比率を崩さず画面に収める */
+    animation: fadeIn 0.3s ease-out;
+}
+
+#skip-btn {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    color: white;
+    padding: 10px 20px;
+    cursor: pointer;
+    border-radius: 4px;
+    font-weight: bold;
+    z-index: 1001;
+}
+
+#skip-btn:hover {
+    background: rgba(255, 255, 255, 0.4);
+}
+
+/* ==========================================
+   3. 結果一覧画面
+   ========================================== */
+#result-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.9);
+    /* 少し透けた黒背景 */
+    z-index: 500;
+    overflow-y: auto;
+    /* ここだけスクロール許可 */
+    cursor: pointer;
+}
+
+.result-grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 15px;
+    padding: 50px;
+}
+
+.result-card {
+    width: 120px;
+    background: #fff;
+    padding: 5px;
+    border-radius: 5px;
+    text-align: center;
+}
+
+.result-card img {
+    width: 100%;
+    display: block;
+}
+
+.result-card p {
+    margin: 5px 0 0;
+    font-size: 12px;
     font-weight: bold;
 }
 
-/* アニメーション定義 */
+.rarity-SSR {
+    border: 3px solid gold;
+    background: #fffbe6;
+}
+
+.rarity-SR {
+    border: 3px solid silver;
+}
+
+/* アニメーション */
 @keyframes fadeIn {
-    from { opacity: 0; transform: scale(0.9); }
-    to { opacity: 1; transform: scale(1); }
+    from {
+        opacity: 0;
+        transform: scale(1.1);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
 }
