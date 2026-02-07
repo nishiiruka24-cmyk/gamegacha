@@ -6,45 +6,122 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ガチャシミュレーター</title>
     <link rel="stylesheet" href="CS.css">
+    <link rel="stylesheet" href="money.css">
 </head>
 
 <body>
 
+    <div id="stone-display">
+        <img src="isi/isi.png" alt="石">
+        <span id="stone-count">0</span>
+        <button id="add-stone-btn">+</button>
+    </div>
+
     <div class="gacha-container" id="main-screen">
         <header>
             <h1>始まりの出会い</h1>
-            <p>期間限定キャラをGETしよう</p>
+            <p>期間限定キャラをGETしよう！</p>
         </header>
 
-        <div class="placeholder-area">
-        </div>
+        <div class="placeholder-area"></div>
 
         <div class="controls">
-            <button id="draw-1-btn" class="gacha-btn single">1連</button>
-            <button id="draw-10-btn" class="gacha-btn multi">10連</button>
+            <button id="draw-1-btn" class="gacha-btn single">
+                1連<br>
+                <div class="btn-cost-row">
+                    <img src="isi/isi.png" class="btn-cost-icon">
+                    <span class="cost-text">150</span>
+                </div>
+            </button>
+
+            <button id="draw-10-btn" class="gacha-btn multi">
+                10連<br>
+                <div class="btn-cost-row">
+                    <img src="isi/isi.png" class="btn-cost-icon">
+                    <span class="cost-text">1500</span>
+                </div>
+            </button>
+
+            <button id="collection-btn" class="gacha-btn collection-btn">一覧</button>
         </div>
     </div>
 
     <div id="result-screen" class="hidden">
         <h2 style="color:white; text-align:center; margin-top:20px;">ガチャ結果</h2>
-        <p style="color:#ddd; text-align:center; font-size:12px;">背景クリックでタイトルへ戻る / カードクリックで拡大</p>
-        <div class="result-grid" id="result-grid">
+        <div class="result-grid" id="result-grid"></div>
+    </div>
+
+    <div id="collection-screen" class="hidden">
+        <div class="collection-header">
+            <h2>獲得キャラクター一覧</h2>
+            <div class="collection-controls">
+                <button id="col-back-btn" class="sub-btn back-btn">戻る</button>
+                <button id="col-toggle-btn" class="sub-btn toggle-btn">情報の表示切替</button>
+            </div>
         </div>
+        <div class="result-grid" id="collection-grid"></div>
     </div>
 
     <div id="fullscreen-overlay" class="hidden">
         <button id="skip-btn">SKIP >></button>
-
         <div id="flash-effect"></div>
-
         <img id="fullscreen-img" src="" alt="Character">
+        <div id="fullscreen-text-container">
+            <div id="fs-rarity"></div>
+            <div class="fs-name-group">
+                <div id="fs-title"></div>
+                <div id="fs-name"></div>
+            </div>
+        </div>
     </div>
 
     <div id="image-modal" class="hidden">
-        <span class="close-hint">クリックして閉じる</span>
         <img id="modal-img" src="">
+        <div id="modal-text-container">
+            <div id="modal-rarity"></div>
+            <div class="modal-name-group">
+                <div id="modal-title"></div>
+                <div id="modal-name"></div>
+            </div>
+        </div>
     </div>
 
+    <div id="shop-modal" class="hidden">
+        <div class="shop-content">
+            <button id="shop-close-btn" class="shop-back-btn">戻る</button>
+
+            <div id="shop-step-age">
+                <h2>年齢確認</h2>
+                <p>あなたの年齢を選択してください</p>
+                <div class="age-buttons">
+                    <button onclick="setAgeLimit(0)">16歳未満 (上限5,000円/月)</button>
+                    <button onclick="setAgeLimit(1)">16~19歳 (上限20,000円/月)</button>
+                    <button onclick="setAgeLimit(2)">20歳以上 (上限なし)</button>
+                </div>
+            </div>
+
+            <div id="shop-step-product" class="hidden">
+                <h2>魔法石ショップ</h2>
+                <div class="product-grid"></div>
+            </div>
+
+            <div id="shop-step-payment" class="hidden">
+                <h2>お支払い</h2>
+                <p id="payment-target-info"></p>
+                <div class="credit-card-form">
+                    <label>カード番号</label>
+                    <input type="text" id="card-number" placeholder="1234 5678 1234 5678">
+                    <div class="card-row">
+                        <input type="text" placeholder="MM/YY">
+                        <input type="text" placeholder="CVC">
+                    </div>
+                    <button id="pay-btn" class="pay-btn">購入する</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="money.js"></script>
     <script src="java.js"></script>
 </body>
 

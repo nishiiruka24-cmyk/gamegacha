@@ -2,11 +2,26 @@
 // 設定エリア
 // ==========================================
 const characterList = [
-    { id: '001', rarity: 'SSR' },
-    { id: '002', rarity: 'SSR' },
-    { id: '003', rarity: 'SSR' },
-    { id: '004', rarity: 'SR' },
-    { id: '005', rarity: 'R' },
+    { id: '001', rarity: 'SSR', title: '春を切り裂く風', name: '春花 ' },
+    { id: '002', rarity: 'SSR', title: '実験開始の合図', name: 'ソラ' },
+    { id: '003', rarity: 'SSR', title: '氷結と稲妻の申子', name: 'リノ ' },
+    { id: '004', rarity: 'SR', title: '異界の主人公', name: '八神 颯人 ' },
+    { id: '006', rarity: 'SSR', title: '著作権の侵害', name: 'キュアアルカナ・シャドウ ' },
+    { id: '007', rarity: 'R', title: '夏の荒波', name: '夏芽 ' },
+    { id: '008', rarity: 'R', title: '秋の一矢', name: '紅葉 ' },
+    { id: '009', rarity: 'SR', title: '孤高の天女', name: '雫 ' },
+    { id: '010', rarity: 'R', title: '水流の騎士', name: 'ダンデ ' },
+    { id: '005', rarity: 'R', title: '聖なる魔法', name: 'マリア ' },
+    //{ id: '011', rarity: 'R', title: '聖なる魔法', name: 'マリア ' },
+    //{ id: '012', rarity: 'R', title: '聖なる魔法', name: 'マリア ' },
+    //{ id: '013', rarity: 'R', title: '聖なる魔法', name: 'マリア ' },
+    //{ id: '014', rarity: 'R', title: '聖なる魔法', name: 'マリア ' },
+    //{ id: '015', rarity: 'R', title: '聖なる魔法', name: 'マリア ' },
+    //{ id: '016', rarity: 'R', title: '聖なる魔法', name: 'マリア ' },
+    //{ id: '017', rarity: 'R', title: '聖なる魔法', name: 'マリア ' },
+    //{ id: '018', rarity: 'R', title: '聖なる魔法', name: 'マリア ' },
+    //{ id: '019', rarity: 'R', title: '聖なる魔法', name: 'マリア ' },
+    //{ id: '020', rarity: 'R', title: '聖なる魔法', name: 'マリア ' },
     // 必要に応じてここに行を足してください
 ];
 
@@ -18,158 +33,213 @@ const dropRates = { SSR: 5, SR: 15, R: 80 };
 const mainScreen = document.getElementById('main-screen');
 const resultScreen = document.getElementById('result-screen');
 const resultGrid = document.getElementById('result-grid');
-
 const overlay = document.getElementById('fullscreen-overlay');
 const fullscreenImg = document.getElementById('fullscreen-img');
 const skipBtn = document.getElementById('skip-btn');
-const flashEffect = document.getElementById('flash-effect'); // 光る演出用
+const flashEffect = document.getElementById('flash-effect');
+
+const fsRarity = document.getElementById('fs-rarity');
+const fsTitle = document.getElementById('fs-title');
+const fsName = document.getElementById('fs-name');
 
 const imageModal = document.getElementById('image-modal');
 const modalImg = document.getElementById('modal-img');
+const modalRarity = document.getElementById('modal-rarity');
+const modalTitle = document.getElementById('modal-title');
+const modalName = document.getElementById('modal-name');
+
+const collectionScreen = document.getElementById('collection-screen');
+const collectionGrid = document.getElementById('collection-grid');
+const colBackBtn = document.getElementById('col-back-btn');
+const colToggleBtn = document.getElementById('col-toggle-btn');
+const collectionBtn = document.getElementById('collection-btn');
+
+// ★追加：石表示エリア
+const stoneDisplay = document.getElementById('stone-display');
 
 // ==========================================
-// 状態管理用変数
+// 状態変数
 // ==========================================
-let currentResults = []; // 引いた結果のリスト
-let currentIndex = 0;    // 今何枚目を表示しているか
+let currentResults = [];
+let currentIndex = 0;
+let userCollection = []; // ローカルストレージは使用しない
 
 // ==========================================
-// イベントリスナー（クリック操作などの登録）
+// イベント
 // ==========================================
+// ★変更：ボタンクリック時に条件チェックをより厳密に
+document.getElementById('draw-1-btn').addEventListener('click', () => {
+    attemptGacha(1);
+});
 
-// ガチャボタン
-document.getElementById('draw-1-btn').addEventListener('click', () => startGacha(1));
-document.getElementById('draw-10-btn').addEventListener('click', () => startGacha(10));
+document.getElementById('draw-10-btn').addEventListener('click', () => {
+    attemptGacha(10);
+});
 
-// 全画面演出中のクリック（次の画像へ）
 overlay.addEventListener('click', (e) => {
-    // スキップボタンを押したときは、ここでの処理を無視
     if (e.target === skipBtn) return;
-
     showNextImage();
 });
 
-// スキップボタン
-skipBtn.addEventListener('click', () => {
-    showResultList(); // 結果一覧へジャンプ
+skipBtn.addEventListener('click', () => showResultList());
+resultScreen.addEventListener('click', () => resetToTitle());
+imageModal.addEventListener('click', () => imageModal.classList.add('hidden'));
+
+collectionBtn.addEventListener('click', () => showCollectionScreen());
+colBackBtn.addEventListener('click', () => {
+    collectionScreen.classList.add('hidden');
+    mainScreen.classList.remove('hidden');
 });
 
-// 結果一覧画面の背景クリック（タイトルへ戻る）
-resultScreen.addEventListener('click', () => {
-    resetToTitle();
-});
-
-// 拡大画像の閉じるクリック
-imageModal.addEventListener('click', () => {
-    imageModal.classList.add('hidden');
+colToggleBtn.addEventListener('click', () => {
+    document.body.classList.toggle('hide-info');
 });
 
 // ==========================================
-// ガチャのロジック関数
+// ロジック
 // ==========================================
 
-// 1. ガチャを開始する処理
-function startGacha(times) {
-    // 抽選を行う
+// ★新設：ガチャ実行の試行関数（コスト不足なら止める）
+function attemptGacha(times) {
+    const cost = times * 150;
+
+    // money.jsの関数でチェック。falseなら即終了
+    if (!consumeStones(cost)) {
+        if (confirm(`魔法石が足りません（必要: ${cost}個 / 所持: ${userStones}個）。\nショップへ移動しますか？`)) {
+            openShop(); // money.js の関数
+        }
+        return; // ここで処理を完全にストップさせる
+    }
+
+    // お金が足りていればガチャ開始
+    startGachaProcess(times);
+}
+
+function startGachaProcess(times) {
+    // ★演出開始：石の表示を隠す
+    stoneDisplay.classList.add('hidden');
+
     currentResults = [];
     for (let i = 0; i < times; i++) {
         const rarity = pickRarity();
-        currentResults.push(pickCharacterByRarity(rarity));
+        const char = pickCharacterByRarity(rarity);
+        currentResults.push(char);
+        addToCollection(char.id);
     }
-
-    // 画面切り替え（タイトルを隠して、演出を表示）
     currentIndex = 0;
     mainScreen.classList.add('hidden');
     overlay.classList.remove('hidden');
-
-    // 1枚目を表示
     updateOverlayImage();
 }
 
-// 2. 次の画像を表示する処理
-function showNextImage() {
-    currentIndex++; // 次の番号へ
+function addToCollection(id) {
+    if (!userCollection.includes(id)) {
+        userCollection.push(id);
+    }
+}
 
+function showNextImage() {
+    currentIndex++;
     if (currentIndex < currentResults.length) {
-        // まだ画像があるなら表示更新
         updateOverlayImage();
     } else {
-        // もう画像がないなら結果一覧へ
         showResultList();
     }
 }
 
-// 3. 全画面画像を更新する処理（光る演出付き）
 function updateOverlayImage() {
     const char = currentResults[currentIndex];
 
-    // 一旦画像を透明にする（光っている間に切り替えるため）
     fullscreenImg.style.opacity = '0';
+    resetTextAnimation();
 
-    // フラッシュの色を設定（SSRなら金、SRなら銀など）
     if (flashEffect) {
-        flashEffect.className = ''; // クラスをリセット
+        flashEffect.className = '';
         flashEffect.classList.add(`flash-${char.rarity}`);
-
-        // アニメーションをリセットして再生（強制再描画テクニック）
         flashEffect.classList.remove('play-flash');
-        void flashEffect.offsetWidth; // リフロー発生
+        void flashEffect.offsetWidth;
         flashEffect.classList.add('play-flash');
     }
 
-    // 少し遅れて画像を表示（光のエフェクトに合わせる）
+    fsRarity.innerHTML = `<img src="rarity/${char.rarity}.png" onerror="this.src='rarity/${char.rarity}.jpg'" class="rarity-icon-large">`;
+    fsTitle.textContent = char.title;
+    fsName.textContent = char.name;
+
+    fullscreenImg.src = `character/${char.id}.png`;
+    fullscreenImg.onerror = function () { this.src = `character/${char.id}.jpg`; };
+
     setTimeout(() => {
-        fullscreenImg.src = `character/${char.id}.png`;
-
-        // 画像のフェードインアニメをリセットして再生
         fullscreenImg.style.animation = 'none';
-        fullscreenImg.offsetHeight;
-        fullscreenImg.style.animation = 'fadeIn 0.5s ease-out forwards';
-
         fullscreenImg.style.opacity = '1';
-    }, 200); // 0.2秒後に画像表示
+        startTextAnimation();
+    }, 100);
 }
 
-// 4. 結果一覧画面を表示する処理
+function resetTextAnimation() {
+    fsRarity.className = ''; fsTitle.className = ''; fsName.className = '';
+}
+function startTextAnimation() {
+    fsRarity.classList.add('slide-in');
+    fsTitle.classList.add('slide-in-delay-1');
+    fsName.classList.add('slide-in-delay-2');
+}
+
 function showResultList() {
-    overlay.classList.add('hidden');       // 演出画面を隠す
-    resultScreen.classList.remove('hidden'); // 結果一覧を表示
+    // ★結果画面になったら石表示を復活させる
+    stoneDisplay.classList.remove('hidden');
 
-    // グリッドの中身を一度リセット
-    resultGrid.innerHTML = '';
+    overlay.classList.add('hidden');
+    resultScreen.classList.remove('hidden');
+    createGridItems(currentResults, resultGrid);
+}
 
-    // 結果の数だけカードを作成
-    currentResults.forEach(char => {
+function showCollectionScreen() {
+    mainScreen.classList.add('hidden');
+    collectionScreen.classList.remove('hidden');
+    const ownedChars = characterList.filter(char => userCollection.includes(char.id));
+    createGridItems(ownedChars, collectionGrid);
+}
+
+function createGridItems(chars, container) {
+    container.innerHTML = '';
+    chars.forEach(char => {
         const card = document.createElement('div');
         card.className = `result-card rarity-${char.rarity}`;
 
-        // カードのHTML（画像とレアリティ文字）
         card.innerHTML = `
-            <img src="character/${char.id}.png">
-            <p>${char.rarity}</p>
+            <img src="character/${char.id}.png" onerror="this.src='character/${char.id}.jpg'" class="char-img">
+            <div class="card-info-overlay">
+                <img src="rarity/${char.rarity}.png" onerror="this.src='rarity/${char.rarity}.jpg'" class="rarity-icon-small">
+                <div class="card-name-group">
+                    <span class="card-title">${char.title}</span>
+                    <span class="card-name">${char.name}</span>
+                </div>
+            </div>
         `;
 
-        // ★重要：カードをクリックした時の拡大表示処理
         card.addEventListener('click', (e) => {
-            e.stopPropagation(); // 親要素（背景）へのクリック通知を止める（タイトルに戻らないようにする）
+            e.stopPropagation();
+            modalImg.src = `character/${char.id}.png`;
+            modalImg.onerror = function () { this.src = `character/${char.id}.jpg`; };
 
-            modalImg.src = `character/${char.id}.png`; // 拡大画像のパス設定
-            imageModal.classList.remove('hidden');     // モーダルを表示
+            modalRarity.innerHTML = `<img src="rarity/${char.rarity}.png" onerror="this.src='rarity/${char.rarity}.jpg'" class="rarity-icon-large">`;
+            modalTitle.textContent = char.title;
+            modalName.textContent = char.name;
+            imageModal.classList.remove('hidden');
         });
 
-        resultGrid.appendChild(card);
+        container.appendChild(card);
     });
 }
 
-// 5. タイトル画面に戻る処理
 function resetToTitle() {
+    // ★タイトルに戻る際も石表示を確実に復活
+    stoneDisplay.classList.remove('hidden');
+
     resultScreen.classList.add('hidden');
     mainScreen.classList.remove('hidden');
 }
 
-// ==========================================
-// 抽選ロジック（確率計算など）
-// ==========================================
 function pickRarity() {
     const r = Math.random() * 100;
     if (r < dropRates.SSR) return 'SSR';
@@ -178,15 +248,7 @@ function pickRarity() {
 }
 
 function pickCharacterByRarity(rarity) {
-    // そのレアリティに該当するキャラだけ抽出
     const list = characterList.filter(c => c.rarity === rarity);
-
-    // もしキャラが登録されていない場合のエラー回避
-    if (list.length === 0) {
-        console.error(`${rarity}のキャラがいません。characterListを確認してください。`);
-        return { id: '000', rarity: 'Error' };
-    }
-
-    // ランダムに1体選ぶ
+    if (list.length === 0) return { id: '000', rarity: 'Error', title: 'Error', name: 'No Data' };
     return list[Math.floor(Math.random() * list.length)];
 }

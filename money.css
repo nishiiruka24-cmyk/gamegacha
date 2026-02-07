@@ -1,0 +1,237 @@
+/* ==========================================
+   石の表示（右上）
+   ========================================== */
+#stone-display {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: rgba(0, 0, 0, 0.7);
+    padding: 10px 20px;
+    border-radius: 50px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    z-index: 2000;
+    /* 最前面 */
+    border: 2px solid #fff;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+    transition: opacity 0.3s;
+    /* フェード用 */
+}
+
+#stone-display img {
+    width: 40px;
+    height: 40px;
+    object-fit: contain;
+}
+
+#stone-count {
+    color: white;
+    font-size: 24px;
+    font-weight: bold;
+    min-width: 60px;
+    text-align: right;
+}
+
+#add-stone-btn {
+    background: #4CAF50;
+    color: white;
+    border: none;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    font-size: 20px;
+    font-weight: bold;
+    cursor: pointer;
+    line-height: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#add-stone-btn:hover {
+    background: #45a049;
+}
+
+/* ★追加：ガチャボタン内の石表示レイアウト */
+.btn-cost-row {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+    margin-top: 5px;
+}
+
+.btn-cost-icon {
+    width: 24px;
+    height: 24px;
+    object-fit: contain;
+}
+
+.cost-text {
+    font-size: 18px;
+    font-weight: bold;
+    color: #fff;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+/* ==========================================
+   課金画面（ショップモーダル）
+   ========================================== */
+#shop-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.85);
+    z-index: 3000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.shop-content {
+    background: #fff;
+    width: 90%;
+    max-width: 800px;
+    border-radius: 20px;
+    padding: 40px;
+    text-align: center;
+    position: relative;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 0 50px rgba(74, 144, 226, 0.3);
+}
+
+.shop-content h2 {
+    color: #333;
+    margin-bottom: 30px;
+    border-bottom: 2px solid #eee;
+    padding-bottom: 10px;
+}
+
+.shop-back-btn {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    background: #666;
+    color: white;
+    border: none;
+    padding: 8px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.age-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    max-width: 400px;
+    margin: 0 auto;
+}
+
+.age-buttons button {
+    padding: 15px;
+    font-size: 18px;
+    background: #f0f2f5;
+    border: 2px solid #ddd;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.age-buttons button:hover {
+    background: #e1e4e8;
+    border-color: #bbb;
+}
+
+.product-grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+}
+
+.product-card {
+    background: #f9f9f9;
+    border: 2px solid #eee;
+    border-radius: 15px;
+    padding: 20px;
+    width: 180px;
+    cursor: pointer;
+    transition: 0.2s;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.product-card:hover {
+    transform: scale(1.05);
+    border-color: #4a90e2;
+}
+
+.product-img {
+    width: 60px;
+    height: 60px;
+    margin-bottom: 10px;
+}
+
+.product-name {
+    font-weight: bold;
+    font-size: 18px;
+    margin-bottom: 5px;
+}
+
+.product-price {
+    background: #ff6b6b;
+    color: white;
+    padding: 5px 15px;
+    border-radius: 20px;
+    font-weight: bold;
+}
+
+.credit-card-form {
+    max-width: 400px;
+    margin: 0 auto;
+    text-align: left;
+}
+
+.credit-card-form label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: #555;
+}
+
+.credit-card-form input {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+    box-sizing: border-box;
+}
+
+.card-row {
+    display: flex;
+    gap: 10px;
+}
+
+.pay-btn {
+    width: 100%;
+    background: #4a90e2;
+    color: white;
+    padding: 15px;
+    border: none;
+    border-radius: 10px;
+    font-size: 20px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.pay-btn:hover {
+    background: #357abd;
+}
