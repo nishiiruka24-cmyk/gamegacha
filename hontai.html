@@ -2,12 +2,20 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>ガチャシミュレーター</title>
     <link rel="stylesheet" href="CS.css">
     <link rel="stylesheet" href="money.css">
 </head>
 <body onclick="tryPlayBGM()">
+
+    <div id="rotate-warning">
+        <div class="warning-content">
+            <p>⚠️</p>
+            <p>このゲームは横画面専用です</p>
+            <p>スマホを横向きにしてください</p>
+        </div>
+    </div>
 
     <div id="stone-display">
         <img src="isi/isi.png" alt="石">
@@ -16,7 +24,11 @@
     </div>
 
     <div class="gacha-container" id="main-screen">
-        
+        <header>
+            <h1>始まりの出会い</h1>
+            <p>期間限定キャラをGETしよう！</p>
+        </header>
+
         <div class="banner-wrapper">
             <button id="banner-prev" class="nav-arrow left-arrow">
                 <span class="arrow-shape"></span>
@@ -26,7 +38,9 @@
                 <img id="banner-img" src="" alt="Pickup Character">
                 
                 <div class="banner-overlay">
-                    <div id="banner-rarity"></div> <div class="banner-text-group">
+                    <div id="banner-rarity"></div>
+                    
+                    <div class="banner-text-group">
                         <div id="banner-title"></div>
                         <div id="banner-name"></div>
                     </div>
@@ -113,9 +127,9 @@
             <div id="shop-step-age">
                 <h2>年齢確認</h2>
                 <div class="age-buttons">
-                    <button onclick="setAgeLimit(0)">16歳未満</button>
-                    <button onclick="setAgeLimit(1)">16~19歳</button>
-                    <button onclick="setAgeLimit(2)">20歳以上</button>
+                    <button onclick="setAgeLimit(0)">16歳未満 (上限5,000円/月)</button>
+                    <button onclick="setAgeLimit(1)">16~19歳 (上限20,000円/月)</button>
+                    <button onclick="setAgeLimit(2)">20歳以上 (上限なし)</button>
                 </div>
             </div>
             <div id="shop-step-product" class="hidden">
