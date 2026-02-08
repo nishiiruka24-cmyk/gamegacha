@@ -5,26 +5,26 @@
 // メイン画面のバナーに表示される順番です
 const pickupList = [
     {
-        id: '003', 
-        rarity: 'SSR', 
-        title: '氷結と稲妻の申子', 
-        name: 'リノ', 
+        id: '003',
+        rarity: 'SSR',
+        title: '氷結と稲妻の申子',
+        name: 'リノ',
         desc: '強力な氷と雷を操る少女。<br>強力な攻撃で敵を倒す彼女を仲間にしよう！',
         period: '期間：2/1 ~ 2/15'
     },
     {
-        id: '001', 
-        rarity: 'SSR', 
-        title: '春を切り裂く風', 
-        name: '春花', 
+        id: '001',
+        rarity: 'SSR',
+        title: '春を切り裂く風',
+        name: '春花',
         desc: '桜の花びらのごとく華麗に舞い戦う少女。<br>春の力を受け継いだ彼女を仲間にしよう！',
         period: '期間：2/1 ~ 2/15'
     },
     {
-        id: '002', 
-        rarity: 'SSR', 
-        title: '実験開始の合図', 
-        name: 'ソラ', 
+        id: '002',
+        rarity: 'SSR',
+        title: '実験開始の合図',
+        name: 'ソラ',
         desc: '若き天才科学者。<br>知識を武器に戦う彼女を仲間にしよう！',
         period: '期間：2/1 ~ 2/15'
     }
@@ -35,7 +35,7 @@ const characterList = [
     { id: '002', rarity: 'SSR', title: '実験開始の合図', name: 'ソラ' },
     { id: '003', rarity: 'SSR', title: '氷結と稲妻の申子', name: 'リノ ' },
     { id: '004', rarity: 'SR', title: '異界の主人公', name: '八神 颯人 ' },
-    { id: '006', rarity: 'SSR', title: '著作権の侵害', name: 'キュアアルカナ・シャドウ ' },
+    // { id: '006', rarity: 'SSR', title: '著作権の侵害', name: 'キュアアルカナ・シャドウ ' },
     { id: '007', rarity: 'R', title: '夏の荒波', name: '夏芽 ' },
     { id: '008', rarity: 'R', title: '秋の一矢', name: '紅葉 ' },
     { id: '009', rarity: 'SR', title: '孤高の天女', name: '雫 ' },
@@ -104,7 +104,7 @@ const bannerNext = document.getElementById('banner-next');
 // ==========================================
 let currentResults = [];
 let currentIndex = 0;
-let userCollection = []; 
+let userCollection = [];
 
 // バナーの現在のインデックス
 let currentPickupIndex = 0;
@@ -134,12 +134,12 @@ bannerNext.addEventListener('click', () => {
 });
 
 document.getElementById('draw-1-btn').addEventListener('click', () => {
-    playSE('click'); 
+    playSE('click');
     attemptGacha(1);
 });
 
 document.getElementById('draw-10-btn').addEventListener('click', () => {
-    playSE('click'); 
+    playSE('click');
     attemptGacha(10);
 });
 
@@ -149,30 +149,30 @@ overlay.addEventListener('click', (e) => {
 });
 
 skipBtn.addEventListener('click', () => {
-    playSE('click'); 
+    playSE('click');
     showResultList();
 });
 
 resultScreen.addEventListener('click', () => {
-    playSE('click'); 
+    playSE('click');
     resetToTitle();
 });
 
 imageModal.addEventListener('click', () => imageModal.classList.add('hidden'));
 
 collectionBtn.addEventListener('click', () => {
-    playSE('click'); 
+    playSE('click');
     showCollectionScreen();
 });
 
 colBackBtn.addEventListener('click', () => {
-    playSE('click'); 
+    playSE('click');
     collectionScreen.classList.add('hidden');
     mainScreen.classList.remove('hidden');
 });
 
 colToggleBtn.addEventListener('click', () => {
-    playSE('click'); 
+    playSE('click');
     document.body.classList.toggle('hide-info');
 });
 
@@ -194,9 +194,9 @@ function prevBanner() {
 
 function updateBannerDisplay() {
     const data = pickupList[currentPickupIndex];
-    
+
     bannerImg.src = `character/${data.id}.png`;
-    bannerImg.onerror = function() { this.src = `character/${data.id}.jpg`; };
+    bannerImg.onerror = function () { this.src = `character/${data.id}.jpg`; };
 
     bannerRarity.innerHTML = `<img src="rarity/${data.rarity}.png" onerror="this.src='rarity/${data.rarity}.jpg'">`;
 
@@ -223,8 +223,8 @@ function attemptGacha(times) {
     const cost = times * 150;
 
     if (!consumeStones(cost)) {
-        if(confirm(`魔法石が足りません（必要: ${cost}個 / 所持: ${userStones}個）。\nショップへ移動しますか？`)) {
-            playSE('click'); 
+        if (confirm(`魔法石が足りません（必要: ${cost}個 / 所持: ${userStones}個）。\nショップへ移動しますか？`)) {
+            playSE('click');
             openShop();
         }
         return;
@@ -234,7 +234,7 @@ function attemptGacha(times) {
 }
 
 function startGachaProcess(times) {
-    playSE('gacha'); 
+    playSE('gacha');
     stoneDisplay.classList.add('hidden');
     clearInterval(autoSlideInterval);
 
@@ -268,32 +268,32 @@ function showNextImage() {
 
 function updateOverlayImage() {
     const char = currentResults[currentIndex];
-    
+
     fullscreenImg.style.opacity = '0';
     resetTextAnimation();
 
     if (flashEffect) {
-        flashEffect.className = ''; 
+        flashEffect.className = '';
         flashEffect.classList.add(`flash-${char.rarity}`);
         flashEffect.classList.remove('play-flash');
-        void flashEffect.offsetWidth; 
+        void flashEffect.offsetWidth;
         flashEffect.classList.add('play-flash');
     }
 
     fsRarity.innerHTML = `<img src="rarity/${char.rarity}.png" onerror="this.src='rarity/${char.rarity}.jpg'" class="rarity-icon-large">`;
     fsTitle.textContent = char.title;
     fsName.textContent = char.name;
-    
+
     fullscreenImg.src = `character/${char.id}.png`;
-    fullscreenImg.onerror = function() { this.src = `character/${char.id}.jpg`; };
+    fullscreenImg.onerror = function () { this.src = `character/${char.id}.jpg`; };
 
     setTimeout(() => {
-        playSE('result'); 
-        
+        playSE('result');
+
         fullscreenImg.style.animation = 'none';
         fullscreenImg.style.opacity = '1';
         startTextAnimation();
-    }, 100); 
+    }, 100);
 }
 
 function resetTextAnimation() {
@@ -316,10 +316,10 @@ function showResultList() {
 function showCollectionScreen() {
     mainScreen.classList.add('hidden');
     collectionScreen.classList.remove('hidden');
-    
+
     // 1. 持っているキャラを抽出
     let ownedChars = characterList.filter(char => userCollection.includes(char.id));
-    
+
     // 2. レアリティの優先順位を定義
     const rarityPriority = { 'SSR': 3, 'SR': 2, 'R': 1 };
 
@@ -339,7 +339,7 @@ function createGridItems(chars, container) {
     chars.forEach(char => {
         const card = document.createElement('div');
         card.className = `result-card rarity-${char.rarity}`;
-        
+
         card.innerHTML = `
             <img src="character/${char.id}.png" onerror="this.src='character/${char.id}.jpg'" class="char-img">
             <div class="card-info-overlay">
@@ -352,11 +352,11 @@ function createGridItems(chars, container) {
         `;
 
         card.addEventListener('click', (e) => {
-            playSE('click'); 
+            playSE('click');
             e.stopPropagation();
             modalImg.src = `character/${char.id}.png`;
-            modalImg.onerror = function() { this.src = `character/${char.id}.jpg`; };
-            
+            modalImg.onerror = function () { this.src = `character/${char.id}.jpg`; };
+
             modalRarity.innerHTML = `<img src="rarity/${char.rarity}.png" onerror="this.src='rarity/${char.rarity}.jpg'" class="rarity-icon-large">`;
             modalTitle.textContent = char.title;
             modalName.textContent = char.name;
