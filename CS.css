@@ -393,3 +393,40 @@ body.hide-info #modal-text-container { opacity: 0; }
     #fs-title { font-size: 20px; }
     #fullscreen-text-container { bottom: 5%; left: 5%; gap: 10px; }
 }
+/* ==========================================
+   7. 画面回転時のちらつき防止
+   ========================================== */
+
+/* 画面が回転し始めた瞬間、強制的に横向きのスタイルを適用する */
+@media screen and (orientation: landscape) {
+    /* 画面全体を横長に固定（縦にスクロールさせない） */
+    html, body {
+        width: 100vw;
+        height: 100vh;
+        overflow: hidden;
+        touch-action: none; /* タッチ操作を画面に固定 */
+    }
+    
+    /* ゲームコンテナも画面いっぱいに広げる */
+    .gacha-container {
+        width: 100vw;
+        height: 100vh;
+        padding: 0; /* 余白をなくす */
+        justify-content: center; /* 中央寄せに戻す */
+    }
+}
+
+/* 縦画面に戻った時のリセット */
+@media screen and (orientation: portrait) {
+    html, body {
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        touch-action: auto;
+    }
+    .gacha-container {
+        width: 100%;
+        height: auto;
+        padding: 20px; /* 元の余白に戻す */
+    }
+}
