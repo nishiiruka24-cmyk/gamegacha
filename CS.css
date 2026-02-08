@@ -278,3 +278,118 @@ body.hide-info #modal-text-container { opacity: 0; }
 }
 .collection-header { text-align: center; margin-top: 30px; color: white; }
 .collection-controls { display: flex; justify-content: center; gap: 20px; margin-top: 20px; }
+/* ==========================================
+   6. スマホ・タブレット対応（レスポンシブ）
+   ========================================== */
+
+/* --------------------------------------
+   A. 縦画面の時の設定 (警告を出してゲームを隠す)
+   -------------------------------------- */
+#rotate-warning {
+    display: none; /* 通常は隠す */
+}
+
+@media screen and (orientation: portrait) {
+    /* ゲーム画面全体を隠す */
+    .gacha-container, 
+    #stone-display, 
+    #fullscreen-overlay, 
+    #result-screen, 
+    #collection-screen,
+    #shop-modal {
+        display: none !important;
+    }
+
+    /* 警告画面を表示 */
+    #rotate-warning {
+        display: flex;
+        position: fixed; top: 0; left: 0;
+        width: 100vw; height: 100vh;
+        background-color: #222;
+        color: white;
+        justify-content: center;
+        align-items: center;
+        z-index: 9999;
+        text-align: center;
+    }
+    .warning-content p {
+        font-size: 20px;
+        margin: 10px;
+        font-weight: bold;
+    }
+}
+
+/* --------------------------------------
+   B. 横画面の時の設定 (要素を小さくして収める)
+   -------------------------------------- */
+@media screen and (orientation: landscape) and (max-height: 600px) {
+    /* 画面の高さいっぱいを使う */
+    .gacha-container {
+        width: 100%;
+        height: 100vh;
+        padding: 5px;
+        justify-content: flex-start; /* 上寄せ */
+    }
+
+    /* ヘッダー: タイトルを小さく、サブタイトルは消す */
+    header h1 { font-size: 18px; margin: 5px 0; }
+    header p { display: none; }
+
+    /* バナーエリア: 高さを画面の55%くらいに抑える */
+    .banner-wrapper {
+        height: 55vh; 
+        margin-bottom: 5px;
+    }
+
+    /* バナー内の文字サイズ調整 */
+    #banner-name { font-size: 40px; }
+    #banner-title { font-size: 14px; }
+    
+    /* レアリティ画像を小さく */
+    #banner-rarity { left: 10px; bottom: 10px; }
+    #banner-rarity img { height: 60px; }
+
+    /* 名前とタイトルの位置調整 */
+    .banner-text-group { left: 140px; bottom: 10px; }
+
+    /* 説明文や期間は、画面が狭いので非表示にする（スッキリさせるため） */
+    .banner-desc-box, .banner-period-box {
+        display: none;
+    }
+
+    /* ボタンエリア */
+    .controls {
+        gap: 10px;
+        margin-top: 5px;
+    }
+    .gacha-btn {
+        width: 140px; 
+        height: 50px; /* 高さを低く */
+        border-radius: 5px;
+    }
+    .btn-label { font-size: 14px; }
+    .btn-cost-icon { width: 14px; height: 14px; }
+    .cost-text { font-size: 12px; }
+
+    /* 石表示（右上）を小さく */
+    #stone-display {
+        top: 5px; right: 5px;
+        padding: 5px 10px;
+    }
+    #stone-display img { width: 20px; height: 20px; }
+    #stone-count { font-size: 16px; min-width: 30px; }
+    #add-stone-btn { width: 20px; height: 20px; font-size: 14px; }
+
+    /* 結果画面のカードサイズ */
+    .result-grid { padding: 20px; gap: 10px; }
+    .result-card { width: 100px; height: 150px; }
+    .rarity-icon-small { width: 40px; }
+    .card-title { font-size: 8px; }
+    .card-name { font-size: 12px; }
+
+    /* 全画面演出の調整 */
+    .rarity-icon-large { height: 100px; }
+    #fs-name { font-size: 50px; }
+    #fs-title { font-size: 20px; }
+    #fullscreen-text-container { bottom: 5%; left: 5%; gap: 10px; }
+}

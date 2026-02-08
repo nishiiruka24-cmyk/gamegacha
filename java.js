@@ -114,7 +114,6 @@ let autoSlideInterval;
 // ==========================================
 // 初期化処理
 // ==========================================
-// ページ読み込み時にバナーを表示＆自動再生開始
 updateBannerDisplay();
 startAutoSlide();
 
@@ -122,18 +121,16 @@ startAutoSlide();
 // イベント
 // ==========================================
 
-// バナー切り替えボタン（前へ）
 bannerPrev.addEventListener('click', () => {
     playSE('click');
     prevBanner();
-    resetAutoSlide(); // 手動操作したらタイマーリセット
+    resetAutoSlide();
 });
 
-// バナー切り替えボタン（次へ）
 bannerNext.addEventListener('click', () => {
     playSE('click');
     nextBanner();
-    resetAutoSlide(); // 手動操作したらタイマーリセット
+    resetAutoSlide();
 });
 
 document.getElementById('draw-1-btn').addEventListener('click', () => {
@@ -183,7 +180,6 @@ colToggleBtn.addEventListener('click', () => {
 // ロジック
 // ==========================================
 
-// ★バナー操作関数
 function nextBanner() {
     currentPickupIndex++;
     if (currentPickupIndex >= pickupList.length) currentPickupIndex = 0;
@@ -199,31 +195,26 @@ function prevBanner() {
 function updateBannerDisplay() {
     const data = pickupList[currentPickupIndex];
     
-    // 画像
     bannerImg.src = `character/${data.id}.png`;
     bannerImg.onerror = function() { this.src = `character/${data.id}.jpg`; };
 
-    // レアリティ画像
     bannerRarity.innerHTML = `<img src="rarity/${data.rarity}.png" onerror="this.src='rarity/${data.rarity}.jpg'">`;
 
-    // テキスト
     bannerTitle.textContent = data.title;
     bannerName.textContent = data.name;
     bannerDesc.innerHTML = data.desc;
     bannerPeriod.textContent = data.period;
 }
 
-// ★自動スライド機能
 function startAutoSlide() {
-    // 5000ミリ秒（5秒）ごとに次のバナーへ
     autoSlideInterval = setInterval(() => {
         nextBanner();
     }, 5000);
 }
 
 function resetAutoSlide() {
-    clearInterval(autoSlideInterval); // 一旦停止
-    startAutoSlide(); // 再開
+    clearInterval(autoSlideInterval);
+    startAutoSlide();
 }
 
 // --------------------------------------------------
@@ -245,7 +236,6 @@ function attemptGacha(times) {
 function startGachaProcess(times) {
     playSE('gacha'); 
     stoneDisplay.classList.add('hidden');
-    // ガチャ中はバナーの自動切り替えを止める（裏で動かないように）
     clearInterval(autoSlideInterval);
 
     currentResults = [];
@@ -322,10 +312,25 @@ function showResultList() {
     createGridItems(currentResults, resultGrid);
 }
 
+// ★修正：コレクション画面表示（ソート処理追加）
 function showCollectionScreen() {
     mainScreen.classList.add('hidden');
     collectionScreen.classList.remove('hidden');
-    const ownedChars = characterList.filter(char => userCollection.includes(char.id));
+    
+    // 1. 持っているキャラを抽出
+    let ownedChars = characterList.filter(char => userCollection.includes(char.id));
+    
+    // 2. レアリティの優先順位を定義
+    const rarityPriority = { 'SSR': 3, 'SR': 2, 'R': 1 };
+
+    // 3. ソート実行 (SSR > SR > R の順)
+    ownedChars.sort((a, b) => {
+        const priorityA = rarityPriority[a.rarity] || 0;
+        const priorityB = rarityPriority[b.rarity] || 0;
+        // 降順（数字が大きい方が先）
+        return priorityB - priorityA;
+    });
+
     createGridItems(ownedChars, collectionGrid);
 }
 
@@ -366,8 +371,6 @@ function resetToTitle() {
     stoneDisplay.classList.remove('hidden');
     resultScreen.classList.add('hidden');
     mainScreen.classList.remove('hidden');
-    
-    // タイトルに戻ったら自動スライドを再開
     resetAutoSlide();
 }
 
