@@ -1,11 +1,8 @@
 // ==========================================
 // 石（通貨）システム
 // ==========================================
-
-// ★変更：引継ぎなし（セーブデータを読み込まない）で、初期値を3000個にする
 let userStones = 3000;
 
-// 商品リスト
 const products = [
     { stones: 150, price: 120 },
     { stones: 300, price: 240 },
@@ -15,7 +12,6 @@ const products = [
     { stones: 15000, price: 11800 }
 ];
 
-// 選択中の商品
 let selectedProduct = null;
 
 // ==========================================
@@ -36,32 +32,32 @@ const payBtn = document.getElementById('pay-btn');
 const cardNumberInput = document.getElementById('card-number');
 
 // ==========================================
-// 初期化 & イベントリスナー
+// 初期化 & イベント
 // ==========================================
-
-// 画面ロード時に石の数を表示
 updateStoneDisplay();
 
-// ＋ボタンでショップを開く
-addStoneBtn.addEventListener('click', () => openShop());
+addStoneBtn.addEventListener('click', () => {
+    playSE('click'); // ★クリック音
+    openShop();
+});
 
-// 戻るボタン
-shopCloseBtn.addEventListener('click', () => handleBack());
+shopCloseBtn.addEventListener('click', () => {
+    playSE('click'); // ★クリック音
+    handleBack();
+});
 
-// 支払いボタン
-payBtn.addEventListener('click', () => processPayment());
+payBtn.addEventListener('click', () => {
+    playSE('click'); // ★クリック音
+    processPayment();
+});
 
 // ==========================================
 // 基本機能
 // ==========================================
-
-// 石の表示を更新
 function updateStoneDisplay() {
     stoneCountEl.textContent = userStones.toLocaleString();
-    // ★変更：セーブ機能（localStorage）を削除しました
 }
 
-// 石を消費する（足りなければfalseを返す）
 function consumeStones(amount) {
     if (userStones >= amount) {
         userStones -= amount;
@@ -75,7 +71,6 @@ function consumeStones(amount) {
 // ==========================================
 // ショップ機能
 // ==========================================
-
 function openShop() {
     shopModal.classList.remove('hidden');
     showStep('age');
@@ -85,7 +80,6 @@ function closeShop() {
     shopModal.classList.add('hidden');
 }
 
-// 画面遷移管理
 function showStep(stepName) {
     stepAge.classList.add('hidden');
     stepProduct.classList.add('hidden');
@@ -101,7 +95,6 @@ function showStep(stepName) {
     }
 }
 
-// 戻るボタンの挙動
 function handleBack() {
     if (!stepPayment.classList.contains('hidden')) {
         showStep('product');
@@ -112,12 +105,11 @@ function handleBack() {
     }
 }
 
-// ステップ1: 年齢選択
 function setAgeLimit(type) {
+    playSE('click'); // ★クリック音
     showStep('product');
 }
 
-// ステップ2: 商品リスト生成
 function renderProducts() {
     productGrid.innerHTML = '';
     products.forEach(p => {
@@ -128,7 +120,10 @@ function renderProducts() {
             <div class="product-name">石 ${p.stones.toLocaleString()}個</div>
             <div class="product-price">¥${p.price.toLocaleString()}</div>
         `;
-        div.onclick = () => selectProduct(p);
+        div.onclick = () => {
+            playSE('click'); // ★クリック音
+            selectProduct(p);
+        };
         productGrid.appendChild(div);
     });
 }
@@ -143,21 +138,20 @@ function selectProduct(product) {
     showStep('payment');
 }
 
-// ステップ3: 支払い処理
 function processPayment() {
     const cardNum = cardNumberInput.value;
-
+    
     if (cardNum.length < 1) {
         alert('カード番号を入力してください');
         return;
     }
 
-    if (confirm(`¥${selectedProduct.price} で決済しますか？`)) {
+    if(confirm(`¥${selectedProduct.price} で決済しますか？`)) {
+        playSE('pay'); // ★課金成功音！
         alert('購入が完了しました！');
-
+        
         userStones += selectedProduct.stones;
         updateStoneDisplay();
-
         closeShop();
     }
 }

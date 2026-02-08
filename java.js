@@ -1,6 +1,35 @@
 // ==========================================
 // 設定エリア
 // ==========================================
+// ★ここに追加：ピックアップキャラクターの設定リスト
+// メイン画面のバナーに表示される順番です
+const pickupList = [
+    {
+        id: '003', 
+        rarity: 'SSR', 
+        title: '氷結と稲妻の申子', 
+        name: 'リノ', 
+        desc: '強力な氷と雷を操る少女。<br>強力な攻撃で敵を倒す彼女を仲間にしよう！',
+        period: '期間：2/1 ~ 2/15'
+    },
+    {
+        id: '001', 
+        rarity: 'SSR', 
+        title: '春を切り裂く風', 
+        name: '春花', 
+        desc: '桜の花びらのごとく華麗に舞い戦う少女。<br>春の力を受け継いだ彼女を仲間にしよう！',
+        period: '期間：2/1 ~ 2/15'
+    },
+    {
+        id: '002', 
+        rarity: 'SSR', 
+        title: '実験開始の合図', 
+        name: 'ソラ', 
+        desc: '若き天才科学者。<br>知識を武器に戦う彼女を仲間にしよう！',
+        period: '期間：2/1 ~ 2/15'
+    }
+    // ここに追加していけばスライドが増えます
+];
 const characterList = [
     { id: '001', rarity: 'SSR', title: '春を切り裂く風', name: '春花 ' },
     { id: '002', rarity: 'SSR', title: '実験開始の合図', name: 'ソラ' },
@@ -12,16 +41,20 @@ const characterList = [
     { id: '009', rarity: 'SR', title: '孤高の天女', name: '雫 ' },
     { id: '010', rarity: 'R', title: '水流の騎士', name: 'ダンデ ' },
     { id: '005', rarity: 'R', title: '聖なる魔法', name: 'マリア ' },
-    //{ id: '011', rarity: 'R', title: '聖なる魔法', name: 'マリア ' },
-    //{ id: '012', rarity: 'R', title: '聖なる魔法', name: 'マリア ' },
-    //{ id: '013', rarity: 'R', title: '聖なる魔法', name: 'マリア ' },
-    //{ id: '014', rarity: 'R', title: '聖なる魔法', name: 'マリア ' },
-    //{ id: '015', rarity: 'R', title: '聖なる魔法', name: 'マリア ' },
-    //{ id: '016', rarity: 'R', title: '聖なる魔法', name: 'マリア ' },
-    //{ id: '017', rarity: 'R', title: '聖なる魔法', name: 'マリア ' },
-    //{ id: '018', rarity: 'R', title: '聖なる魔法', name: 'マリア ' },
-    //{ id: '019', rarity: 'R', title: '聖なる魔法', name: 'マリア ' },
-    //{ id: '020', rarity: 'R', title: '聖なる魔法', name: 'マリア ' },
+    { id: '011', rarity: 'R', title: '冬の一刺', name: '雪乃 ' },
+    { id: '012', rarity: 'SR', title: '血石の信者', name: 'メア ' },
+    { id: '013', rarity: 'SSR', title: '血色の女王', name: 'メア ' },
+    { id: '014', rarity: 'R', title: '炎の団長', name: 'アレン ' },
+    { id: '015', rarity: 'SR', title: '幸運の囁き', name: 'カエデ ' },
+    { id: '016', rarity: 'R', title: '拳法の使い手', name: 'リン ' },
+    { id: '017', rarity: 'R', title: '冷徹なる魔術師', name: 'ゼクス ' },
+    { id: '018', rarity: 'R', title: '高貴なる姫', name: 'シャルロット ' },
+    { id: '019', rarity: 'R', title: '軍への忠誠', name: 'ヴァイオレット ' },
+    { id: '020', rarity: 'R', title: '時を操るエージェント', name: 'K ' },
+    { id: '021', rarity: 'R', title: '宇宙海賊の姉御', name: 'ミラ' },
+    { id: '022', rarity: 'R', title: '電脳アイドル', name: 'ネオン' },
+    { id: '023', rarity: 'SSR', title: '物語の始まりを告げる', name: 'ルルセア' },
+    { id: '024', rarity: 'R', title: '主導権の剥奪', name: 'マリオネット' },
     // 必要に応じてここに行を足してください
 ];
 
@@ -54,25 +87,62 @@ const colBackBtn = document.getElementById('col-back-btn');
 const colToggleBtn = document.getElementById('col-toggle-btn');
 const collectionBtn = document.getElementById('collection-btn');
 
-// ★追加：石表示エリア
 const stoneDisplay = document.getElementById('stone-display');
+
+// バナー用要素
+const bannerImg = document.getElementById('banner-img');
+const bannerRarity = document.getElementById('banner-rarity');
+const bannerTitle = document.getElementById('banner-title');
+const bannerName = document.getElementById('banner-name');
+const bannerDesc = document.getElementById('banner-desc');
+const bannerPeriod = document.getElementById('banner-period');
+const bannerPrev = document.getElementById('banner-prev');
+const bannerNext = document.getElementById('banner-next');
 
 // ==========================================
 // 状態変数
 // ==========================================
 let currentResults = [];
 let currentIndex = 0;
-let userCollection = []; // ローカルストレージは使用しない
+let userCollection = []; 
+
+// バナーの現在のインデックス
+let currentPickupIndex = 0;
+// 自動切り替え用タイマーID
+let autoSlideInterval;
+
+// ==========================================
+// 初期化処理
+// ==========================================
+// ページ読み込み時にバナーを表示＆自動再生開始
+updateBannerDisplay();
+startAutoSlide();
 
 // ==========================================
 // イベント
 // ==========================================
-// ★変更：ボタンクリック時に条件チェックをより厳密に
+
+// バナー切り替えボタン（前へ）
+bannerPrev.addEventListener('click', () => {
+    playSE('click');
+    prevBanner();
+    resetAutoSlide(); // 手動操作したらタイマーリセット
+});
+
+// バナー切り替えボタン（次へ）
+bannerNext.addEventListener('click', () => {
+    playSE('click');
+    nextBanner();
+    resetAutoSlide(); // 手動操作したらタイマーリセット
+});
+
 document.getElementById('draw-1-btn').addEventListener('click', () => {
+    playSE('click'); 
     attemptGacha(1);
 });
 
 document.getElementById('draw-10-btn').addEventListener('click', () => {
+    playSE('click'); 
     attemptGacha(10);
 });
 
@@ -81,17 +151,31 @@ overlay.addEventListener('click', (e) => {
     showNextImage();
 });
 
-skipBtn.addEventListener('click', () => showResultList());
-resultScreen.addEventListener('click', () => resetToTitle());
+skipBtn.addEventListener('click', () => {
+    playSE('click'); 
+    showResultList();
+});
+
+resultScreen.addEventListener('click', () => {
+    playSE('click'); 
+    resetToTitle();
+});
+
 imageModal.addEventListener('click', () => imageModal.classList.add('hidden'));
 
-collectionBtn.addEventListener('click', () => showCollectionScreen());
+collectionBtn.addEventListener('click', () => {
+    playSE('click'); 
+    showCollectionScreen();
+});
+
 colBackBtn.addEventListener('click', () => {
+    playSE('click'); 
     collectionScreen.classList.add('hidden');
     mainScreen.classList.remove('hidden');
 });
 
 colToggleBtn.addEventListener('click', () => {
+    playSE('click'); 
     document.body.classList.toggle('hide-info');
 });
 
@@ -99,25 +183,70 @@ colToggleBtn.addEventListener('click', () => {
 // ロジック
 // ==========================================
 
-// ★新設：ガチャ実行の試行関数（コスト不足なら止める）
+// ★バナー操作関数
+function nextBanner() {
+    currentPickupIndex++;
+    if (currentPickupIndex >= pickupList.length) currentPickupIndex = 0;
+    updateBannerDisplay();
+}
+
+function prevBanner() {
+    currentPickupIndex--;
+    if (currentPickupIndex < 0) currentPickupIndex = pickupList.length - 1;
+    updateBannerDisplay();
+}
+
+function updateBannerDisplay() {
+    const data = pickupList[currentPickupIndex];
+    
+    // 画像
+    bannerImg.src = `character/${data.id}.png`;
+    bannerImg.onerror = function() { this.src = `character/${data.id}.jpg`; };
+
+    // レアリティ画像
+    bannerRarity.innerHTML = `<img src="rarity/${data.rarity}.png" onerror="this.src='rarity/${data.rarity}.jpg'">`;
+
+    // テキスト
+    bannerTitle.textContent = data.title;
+    bannerName.textContent = data.name;
+    bannerDesc.innerHTML = data.desc;
+    bannerPeriod.textContent = data.period;
+}
+
+// ★自動スライド機能
+function startAutoSlide() {
+    // 5000ミリ秒（5秒）ごとに次のバナーへ
+    autoSlideInterval = setInterval(() => {
+        nextBanner();
+    }, 5000);
+}
+
+function resetAutoSlide() {
+    clearInterval(autoSlideInterval); // 一旦停止
+    startAutoSlide(); // 再開
+}
+
+// --------------------------------------------------
+
 function attemptGacha(times) {
     const cost = times * 150;
 
-    // money.jsの関数でチェック。falseなら即終了
     if (!consumeStones(cost)) {
-        if (confirm(`魔法石が足りません（必要: ${cost}個 / 所持: ${userStones}個）。\nショップへ移動しますか？`)) {
-            openShop(); // money.js の関数
+        if(confirm(`魔法石が足りません（必要: ${cost}個 / 所持: ${userStones}個）。\nショップへ移動しますか？`)) {
+            playSE('click'); 
+            openShop();
         }
-        return; // ここで処理を完全にストップさせる
+        return;
     }
 
-    // お金が足りていればガチャ開始
     startGachaProcess(times);
 }
 
 function startGachaProcess(times) {
-    // ★演出開始：石の表示を隠す
+    playSE('gacha'); 
     stoneDisplay.classList.add('hidden');
+    // ガチャ中はバナーの自動切り替えを止める（裏で動かないように）
+    clearInterval(autoSlideInterval);
 
     currentResults = [];
     for (let i = 0; i < times; i++) {
@@ -149,30 +278,32 @@ function showNextImage() {
 
 function updateOverlayImage() {
     const char = currentResults[currentIndex];
-
+    
     fullscreenImg.style.opacity = '0';
     resetTextAnimation();
 
     if (flashEffect) {
-        flashEffect.className = '';
+        flashEffect.className = ''; 
         flashEffect.classList.add(`flash-${char.rarity}`);
         flashEffect.classList.remove('play-flash');
-        void flashEffect.offsetWidth;
+        void flashEffect.offsetWidth; 
         flashEffect.classList.add('play-flash');
     }
 
     fsRarity.innerHTML = `<img src="rarity/${char.rarity}.png" onerror="this.src='rarity/${char.rarity}.jpg'" class="rarity-icon-large">`;
     fsTitle.textContent = char.title;
     fsName.textContent = char.name;
-
+    
     fullscreenImg.src = `character/${char.id}.png`;
-    fullscreenImg.onerror = function () { this.src = `character/${char.id}.jpg`; };
+    fullscreenImg.onerror = function() { this.src = `character/${char.id}.jpg`; };
 
     setTimeout(() => {
+        playSE('result'); 
+        
         fullscreenImg.style.animation = 'none';
         fullscreenImg.style.opacity = '1';
         startTextAnimation();
-    }, 100);
+    }, 100); 
 }
 
 function resetTextAnimation() {
@@ -185,9 +316,7 @@ function startTextAnimation() {
 }
 
 function showResultList() {
-    // ★結果画面になったら石表示を復活させる
     stoneDisplay.classList.remove('hidden');
-
     overlay.classList.add('hidden');
     resultScreen.classList.remove('hidden');
     createGridItems(currentResults, resultGrid);
@@ -205,7 +334,7 @@ function createGridItems(chars, container) {
     chars.forEach(char => {
         const card = document.createElement('div');
         card.className = `result-card rarity-${char.rarity}`;
-
+        
         card.innerHTML = `
             <img src="character/${char.id}.png" onerror="this.src='character/${char.id}.jpg'" class="char-img">
             <div class="card-info-overlay">
@@ -218,10 +347,11 @@ function createGridItems(chars, container) {
         `;
 
         card.addEventListener('click', (e) => {
+            playSE('click'); 
             e.stopPropagation();
             modalImg.src = `character/${char.id}.png`;
-            modalImg.onerror = function () { this.src = `character/${char.id}.jpg`; };
-
+            modalImg.onerror = function() { this.src = `character/${char.id}.jpg`; };
+            
             modalRarity.innerHTML = `<img src="rarity/${char.rarity}.png" onerror="this.src='rarity/${char.rarity}.jpg'" class="rarity-icon-large">`;
             modalTitle.textContent = char.title;
             modalName.textContent = char.name;
@@ -233,11 +363,12 @@ function createGridItems(chars, container) {
 }
 
 function resetToTitle() {
-    // ★タイトルに戻る際も石表示を確実に復活
     stoneDisplay.classList.remove('hidden');
-
     resultScreen.classList.add('hidden');
     mainScreen.classList.remove('hidden');
+    
+    // タイトルに戻ったら自動スライドを再開
+    resetAutoSlide();
 }
 
 function pickRarity() {
