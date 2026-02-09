@@ -3,7 +3,6 @@
    ========================================== */
 body {
     font-family: "Helvetica Neue", Arial, sans-serif;
-    /* 背景を白に設定 */
     background-color: #ffffff;
     margin: 0; padding: 0;
     overflow: hidden;
@@ -27,7 +26,7 @@ body {
     position: relative; z-index: 10;
 }
 
-/* ガチャタイトル（青ライン＆黒グラデ） */
+/* ガチャタイトル */
 .gacha-title-container {
     width: 100%; text-align: center;
     margin-bottom: 10px;
@@ -81,33 +80,25 @@ body {
     pointer-events: none;
 }
 
-/* --------------------------------------
-   レアリティ画像の配置 (全レアリティ共通)
-   -------------------------------------- */
 #banner-rarity {
     position: absolute;
     bottom: 40px; left: 50px;
-    /* UR専用のサイズ変更を削除し、固定位置・サイズに戻しました */
 }
 #banner-rarity img {
     height: 120px; width: auto;
     filter: drop-shadow(0 2px 5px rgba(0,0,0,0.8));
 }
 
-/* URのオーラ（色だけ紫に） */
+/* URのオーラ設定 */
 img.rarity-UR {
     filter: drop-shadow(0 0 5px #d000ff) drop-shadow(0 0 10px #d000ff);
     animation: pulseUR 2s infinite alternate;
 }
 
-/* --------------------------------------
-   キャラ名位置 (全レアリティ共通)
-   -------------------------------------- */
 .banner-text-group {
     position: absolute;
     bottom: 40px;
-    /* UR専用の位置ズレを削除し、固定位置に戻しました */
-    left: 280px; 
+    left: 280px;
     text-align: left;
 }
 #banner-title {
@@ -236,7 +227,7 @@ body.hide-info .card-info-overlay { opacity: 0; }
 .rarity-UR { border-color: #d000ff; }
 
 /* ==========================================
-   全画面演出
+   全画面演出 & モーダル共通設定
    ========================================== */
 #fullscreen-overlay {
     position: fixed; top: 0; left: 0; width: 100%; height: 100%;
@@ -371,7 +362,7 @@ body.hide-info #modal-text-container { opacity: 0; }
         justify-content: flex-start; /* 上寄せ */
     }
 
-    /* ヘッダー: タイトルを小さく、サブタイトルは消す */
+    /* ヘッダー: タイトルを小さく */
     header h1 { font-size: 18px; margin: 5px 0; }
     header p { display: none; }
 
@@ -411,15 +402,6 @@ body.hide-info #modal-text-container { opacity: 0; }
     .btn-cost-icon { width: 14px; height: 14px; }
     .cost-text { font-size: 12px; }
 
-    /* 石表示（右上）を小さく */
-    #stone-display {
-        top: 5px; right: 5px;
-        padding: 5px 10px;
-    }
-    #stone-display img { width: 20px; height: 20px; }
-    #stone-count { font-size: 16px; min-width: 30px; }
-    #add-stone-btn { width: 20px; height: 20px; font-size: 14px; }
-
     /* 結果画面のカードサイズ */
     .result-grid { padding: 20px; gap: 10px; }
     .result-card { width: 100px; height: 150px; }
@@ -427,9 +409,15 @@ body.hide-info #modal-text-container { opacity: 0; }
     .card-title { font-size: 8px; }
     .card-name { font-size: 12px; }
 
-    /* 全画面演出の調整 */
+    /* 全画面演出の調整（スマホでは小さく） */
     .rarity-icon-large { height: 100px; }
+    .rarity-icon-large.rarity-UR { width: 140px; height: auto !important; max-height: 100px; } /* UR用 */
     #fs-name { font-size: 50px; }
     #fs-title { font-size: 20px; }
     #fullscreen-text-container { bottom: 5%; left: 5%; gap: 10px; }
+
+    /* ★修正：モーダル（クリック拡大画面）の調整（スマホでは小さく） */
+    #modal-text-container { bottom: 5%; left: 5%; gap: 10px; }
+    #modal-title { font-size: 16px; margin-bottom: 2px; }
+    #modal-name { font-size: 36px; }
 }
