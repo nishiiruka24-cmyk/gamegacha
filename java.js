@@ -179,7 +179,6 @@ startAutoSlide();
 // イベント
 // ==========================================
 
-// 左右矢印
 bannerPrev.addEventListener('click', () => {
     playSE('click');
     changeBanner(-1);
@@ -190,7 +189,6 @@ bannerNext.addEventListener('click', () => {
     changeBanner(1);
 });
 
-// 画像をタップで変更
 if (bannerContent) {
     bannerContent.addEventListener('click', () => {
         playSE('click');
@@ -243,7 +241,7 @@ colToggleBtn.addEventListener('click', () => {
 });
 
 // ==========================================
-// ロジック（UI制御）
+// ロジック
 // ==========================================
 
 function changeBanner(direction) {
@@ -266,24 +264,20 @@ function changeVisual(direction) {
     updateBannerDisplay();
 }
 
-// ★標準の表示更新関数に戻しました（クラス切り替え等の複雑な処理を削除）
 function updateBannerDisplay() {
     const banner = gachaBanners[currentBannerIndex];
     const visualInfo = banner.visuals[currentVisualIndex];
     const targetChar = characterList.find(c => c.id === visualInfo.imgId);
     const rarity = targetChar ? targetChar.rarity : 'SSR';
 
-    // タイトルとコスト更新
     currentGachaTitle.textContent = banner.gachaTitle;
     const currentCost = banner.cost || 150;
     if (costText1) costText1.textContent = currentCost;
     if (costText10) costText10.textContent = currentCost * 10;
 
-    // 画像とテキストの更新
     bannerImg.src = `character/${visualInfo.imgId}.png`;
     bannerImg.onerror = function () { this.src = `character/${visualInfo.imgId}.jpg`; };
 
-    // レアリティ画像（ここに class="rarity-UR" 等が入るのでCSSで色は変わります）
     bannerRarity.innerHTML = `<img src="rarity/${rarity}.png" onerror="this.src='rarity/${rarity}.jpg'" class="rarity-${rarity}">`;
 
     bannerTitle.textContent = visualInfo.title;
@@ -314,7 +308,7 @@ function attemptGacha(times) {
     const totalCost = times * unitCost;
 
     if (!consumeStones(totalCost)) {
-        if (confirm(`魔法石が足りません（必要: ${totalCost}個 / 所持: ${userStones}個）。\nショップへ移動しますか？`)) {
+        if (confirm(`魔法石が足りません。ショップへ移動しますか？`)) {
             playSE('click');
             openShop();
         }
