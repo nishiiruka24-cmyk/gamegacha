@@ -1,64 +1,117 @@
 // ==========================================
-// 設定エリア
+// 設定エリア（データベース）
 // ==========================================
-// ★ここに追加：ピックアップキャラクターの設定リスト
-// メイン画面のバナーに表示される順番です
-const pickupList = [
-    {
-        id: '003',
-        rarity: 'SSR',
-        title: '氷結と稲妻の申子',
-        name: 'リノ',
-        desc: '強力な氷と雷を操る少女。<br>強力な攻撃で敵を倒す彼女を仲間にしよう！',
-        period: '期間：2/1 ~ 2/15'
-    },
-    {
-        id: '001',
-        rarity: 'SSR',
-        title: '春を切り裂く風',
-        name: '春花',
-        desc: '桜の花びらのごとく華麗に舞い戦う少女。<br>春の力を受け継いだ彼女を仲間にしよう！',
-        period: '期間：2/1 ~ 2/15'
-    },
-    {
-        id: '002',
-        rarity: 'SSR',
-        title: '実験開始の合図',
-        name: 'ソラ',
-        desc: '若き天才科学者。<br>知識を武器に戦う彼女を仲間にしよう！',
-        period: '期間：2/1 ~ 2/15'
-    }
-    // ここに追加していけばスライドが増えます
-];
+
 const characterList = [
-    { id: '001', rarity: 'SSR', title: '春を切り裂く風', name: '春花 ' },
+    { id: '001', rarity: 'SSR', title: '春を切り裂く風', name: '春花' },
     { id: '002', rarity: 'SSR', title: '実験開始の合図', name: 'ソラ' },
-    { id: '003', rarity: 'SSR', title: '氷結と稲妻の申子', name: 'リノ ' },
-    { id: '004', rarity: 'SR', title: '異界の主人公', name: '八神 颯人 ' },
-    // { id: '006', rarity: 'SSR', title: '著作権の侵害', name: 'キュアアルカナ・シャドウ ' },
-    { id: '007', rarity: 'R', title: '夏の荒波', name: '夏芽 ' },
-    { id: '008', rarity: 'R', title: '秋の一矢', name: '紅葉 ' },
-    { id: '009', rarity: 'SR', title: '孤高の天女', name: '雫 ' },
-    { id: '010', rarity: 'R', title: '水流の騎士', name: 'ダンデ ' },
-    { id: '005', rarity: 'R', title: '聖なる魔法', name: 'マリア ' },
-    { id: '011', rarity: 'R', title: '冬の一刺', name: '雪乃 ' },
-    { id: '012', rarity: 'SR', title: '血石の信者', name: 'メア ' },
-    { id: '013', rarity: 'SSR', title: '血色の女王', name: 'メア ' },
-    { id: '014', rarity: 'R', title: '炎の団長', name: 'アレン ' },
-    { id: '015', rarity: 'SR', title: '幸運の囁き', name: 'カエデ ' },
-    { id: '016', rarity: 'R', title: '拳法の使い手', name: 'リン ' },
-    { id: '017', rarity: 'R', title: '冷徹なる魔術師', name: 'ゼクス ' },
-    { id: '018', rarity: 'R', title: '高貴なる姫', name: 'シャルロット ' },
-    { id: '019', rarity: 'R', title: '軍への忠誠', name: 'ヴァイオレット ' },
-    { id: '020', rarity: 'R', title: '時を操るエージェント', name: 'K ' },
+    { id: '003', rarity: 'SSR', title: '氷結と稲妻の申子', name: 'リノ' },
+    { id: '004', rarity: 'SR', title: '異界の主人公', name: '八神 颯人' },
+    { id: '005', rarity: 'R', title: '聖なる魔法', name: 'マリア' },
+    //{ id: '006', rarity: 'SSR', title: '著作権の侵害', name: 'キュアアルカナ・シャドウ' },
+    { id: '007', rarity: 'R', title: '夏の荒波', name: '夏芽' },
+    { id: '008', rarity: 'R', title: '秋の一矢', name: '紅葉' },
+    { id: '009', rarity: 'SR', title: '孤高の天女', name: '雫' },
+    { id: '010', rarity: 'R', title: '水流の騎士', name: 'ダンデ' },
+    { id: '011', rarity: 'R', title: '冬の一刺', name: '雪乃' },
+    { id: '012', rarity: 'SR', title: '血石の信者', name: 'メア' },
+    { id: '013', rarity: 'SSR', title: '血色の女王', name: 'メア' },
+    { id: '014', rarity: 'R', title: '炎の団長', name: 'アレン' },
+    { id: '015', rarity: 'SR', title: '幸運の囁き', name: 'カエデ' },
+    { id: '016', rarity: 'R', title: '拳法の使い手', name: 'リン' },
+    { id: '017', rarity: 'R', title: '冷徹なる魔術師', name: 'ゼクス' },
+    { id: '018', rarity: 'R', title: '高貴なる姫', name: 'シャルロット' },
+    { id: '019', rarity: 'R', title: '軍への忠誠', name: 'ヴァイオレット' },
+    { id: '020', rarity: 'R', title: '時を操るエージェント', name: 'K' },
     { id: '021', rarity: 'R', title: '宇宙海賊の姉御', name: 'ミラ' },
     { id: '022', rarity: 'R', title: '電脳アイドル', name: 'ネオン' },
     { id: '023', rarity: 'SSR', title: '物語の始まりを告げる', name: 'ルルセア' },
     { id: '024', rarity: 'R', title: '主導権の剥奪', name: 'マリオネット' },
-    // 必要に応じてここに行を足してください
+    { id: '025', rarity: 'UR', title: '孤高に舞う雪猫', name: 'リノ（猫耳）' },
+    { id: '026', rarity: 'SR', title: '月の民', name: 'カグヤ' },
+    { id: '027', rarity: 'R', title: '芸術の虜', name: 'ピカソ' },
+    { id: '028', rarity: 'R', title: 'パティシエ見習い', name: 'ショコラ' },
+    { id: '029', rarity: 'R', title: 'マジックの始まり', name: 'バロン' },
+    { id: '030', rarity: 'R', title: 'ロックなギタリスト', name: 'ガイ' },
+    { id: '031', rarity: 'SR', title: '雷の一太刀', name: 'シオン' }
 ];
 
-const dropRates = { SSR: 5, SR: 15, R: 80 };
+// ==========================================
+// ★ガチャ（バナー）設定エリア
+// ==========================================
+/*
+  excludedIds: そのガチャから出現させたくないキャラIDのリストを追加しました。
+  空の配列 [] なら全キャラ（レアリティ抽選に従って）出現します。
+*/
+
+const gachaBanners = [
+    // --- ガチャ1 ---
+    {
+        id: 'banner_rino',
+        gachaTitle: '【期間限定】孤高に舞う雪猫ガチャ',
+        cost: 150,
+        rates: { UR: 3, SSR: 5, SR: 15, R: 77 },
+        pickupIds: ['025'],
+        pickupRate: 1,
+        excludedIds: [], 
+        desc: '猫耳の姿となったリノ。<br>氷山の中を駆け回る彼女を仲間にしよう！',
+        period: '期間：2/1 ~ 2/15',
+        visuals: [
+            { imgId: '025', title: '孤高に舞う雪猫', name: 'リノ（猫耳）' }
+        ]
+    },
+    {
+        id: 'banner_rino',
+        gachaTitle: '【日替わりピックアップ】氷結と稲妻ピックアップガチャ',
+        cost: 150,
+        rates: { SSR: 5, SR: 15, R: 80 },
+        pickupIds: ['003'],
+        pickupRate: 0.7,
+        excludedIds: ['025'], 
+        desc: '強力な氷と雷を操る少女。<br>強力な攻撃で敵を倒す彼女を仲間にしよう！',
+        period: '期間：2/1 ~ 2/15',
+        visuals: [
+            { imgId: '003', title: '氷結と稲妻の申子', name: 'リノ' }
+        ]
+    },
+    // --- ガチャ2 ---
+    {
+        id: 'banner_double',
+        gachaTitle: '【イベント】春花＆ソラ ダブルピックアップ',
+        cost: 150,
+        rates: { SSR: 5, SR: 15, R: 80 },
+        pickupIds: ['001', '002'],
+        pickupRate: 0.5,
+        // ★ここ：除外なし（全員出る）
+        excludedIds: ['025'], 
+        desc: '春花とソラがダブルピックアップ！<br>二人の天才をチームに加えるチャンス。',
+        period: '期間：2/1 ~ 2/15',
+        visuals: [
+            { imgId: '001', title: '春を切り裂く風', name: '春花' },
+            { imgId: '002', title: '実験開始の合図', name: 'ソラ' }
+        ]
+    },
+    // --- ガチャ3 ---
+    {
+        id: 'banner_fest',
+        gachaTitle: '【祝】サービス開始記念ドリームフェス',
+        cost: 150,
+        rates: { SSR: 10, SR: 20, R: 70 },
+        pickupIds: [],
+        pickupRate: 1,
+        // ★ここ：このガチャでの除外設定
+        excludedIds: ['025'], 
+        desc: 'SSR確率2倍！<br>最強のキャラたちを手に入れるチャンス。',
+        period: '期間：2/9 ~ 2/11',
+        visuals: [
+            { imgId: '001', title: '春を切り裂く風', name: '春花' },
+            { imgId: '002', title: '実験開始の合図', name: 'ソラ' },
+            { imgId: '003', title: '氷結と稲妻の申子', name: 'リノ' },
+            { imgId: '013', title: '血色の女王', name: 'メア' },
+            { imgId: '023', title: '物語の始まりを告げる', name: 'ルルセア' }
+        ]
+    }
+];
 
 // ==========================================
 // 要素の取得
@@ -88,8 +141,14 @@ const colToggleBtn = document.getElementById('col-toggle-btn');
 const collectionBtn = document.getElementById('collection-btn');
 
 const stoneDisplay = document.getElementById('stone-display');
+const currentGachaTitle = document.getElementById('current-gacha-title');
+
+const costText1 = document.getElementById('cost-text-1');
+const costText10 = document.getElementById('cost-text-10');
 
 // バナー用要素
+const bannerContent = document.querySelector('.banner-content');
+const bannerOverlay = document.querySelector('.banner-overlay');
 const bannerImg = document.getElementById('banner-img');
 const bannerRarity = document.getElementById('banner-rarity');
 const bannerTitle = document.getElementById('banner-title');
@@ -106,9 +165,9 @@ let currentResults = [];
 let currentIndex = 0;
 let userCollection = [];
 
-// バナーの現在のインデックス
-let currentPickupIndex = 0;
-// 自動切り替え用タイマーID
+let currentBannerIndex = 0;
+let currentVisualIndex = 0;
+
 let autoSlideInterval;
 
 // ==========================================
@@ -121,17 +180,25 @@ startAutoSlide();
 // イベント
 // ==========================================
 
+// 左右矢印：ガチャの種類を変更
 bannerPrev.addEventListener('click', () => {
     playSE('click');
-    prevBanner();
-    resetAutoSlide();
+    changeBanner(-1);
 });
 
 bannerNext.addEventListener('click', () => {
     playSE('click');
-    nextBanner();
-    resetAutoSlide();
+    changeBanner(1);
 });
+
+// 画像をタップで「表示キャラ」を変更
+if (bannerContent) {
+    bannerContent.addEventListener('click', () => {
+        playSE('click');
+        changeVisual(1);
+        resetAutoSlide();
+    });
+}
 
 document.getElementById('draw-1-btn').addEventListener('click', () => {
     playSE('click');
@@ -177,38 +244,58 @@ colToggleBtn.addEventListener('click', () => {
 });
 
 // ==========================================
-// ロジック
+// ロジック（UI制御）
 // ==========================================
 
-function nextBanner() {
-    currentPickupIndex++;
-    if (currentPickupIndex >= pickupList.length) currentPickupIndex = 0;
+function changeBanner(direction) {
+    currentBannerIndex += direction;
+    if (currentBannerIndex >= gachaBanners.length) currentBannerIndex = 0;
+    if (currentBannerIndex < 0) currentBannerIndex = gachaBanners.length - 1;
+    
+    currentVisualIndex = 0;
     updateBannerDisplay();
+    resetAutoSlide();
 }
 
-function prevBanner() {
-    currentPickupIndex--;
-    if (currentPickupIndex < 0) currentPickupIndex = pickupList.length - 1;
+function changeVisual(direction) {
+    const banner = gachaBanners[currentBannerIndex];
+    if (!banner.visuals || banner.visuals.length === 0) return;
+
+    currentVisualIndex += direction;
+    if (currentVisualIndex >= banner.visuals.length) currentVisualIndex = 0;
+    
     updateBannerDisplay();
 }
 
 function updateBannerDisplay() {
-    const data = pickupList[currentPickupIndex];
+    const banner = gachaBanners[currentBannerIndex];
+    
+    const visualInfo = banner.visuals[currentVisualIndex];
+    const targetChar = characterList.find(c => c.id === visualInfo.imgId);
+    const rarity = targetChar ? targetChar.rarity : 'SSR';
 
-    bannerImg.src = `character/${data.id}.png`;
-    bannerImg.onerror = function () { this.src = `character/${data.id}.jpg`; };
+    currentGachaTitle.textContent = banner.gachaTitle;
 
-    bannerRarity.innerHTML = `<img src="rarity/${data.rarity}.png" onerror="this.src='rarity/${data.rarity}.jpg'">`;
+    const currentCost = banner.cost || 150;
+    if (costText1) costText1.textContent = currentCost;
+    if (costText10) costText10.textContent = currentCost * 10;
 
-    bannerTitle.textContent = data.title;
-    bannerName.textContent = data.name;
-    bannerDesc.innerHTML = data.desc;
-    bannerPeriod.textContent = data.period;
+    bannerImg.src = `character/${visualInfo.imgId}.png`;
+    bannerImg.onerror = function () { this.src = `character/${visualInfo.imgId}.jpg`; };
+
+    // ★修正：レアリティクラスを追加 (rarity-UR など)
+    bannerRarity.innerHTML = `<img src="rarity/${rarity}.png" onerror="this.src='rarity/${rarity}.jpg'" class="rarity-${rarity}">`;
+
+    bannerTitle.textContent = visualInfo.title;
+    bannerName.textContent = visualInfo.name;
+    
+    bannerDesc.innerHTML = banner.desc;
+    bannerPeriod.textContent = banner.period;
 }
 
 function startAutoSlide() {
     autoSlideInterval = setInterval(() => {
-        nextBanner();
+        changeVisual(1);
     }, 5000);
 }
 
@@ -217,13 +304,17 @@ function resetAutoSlide() {
     startAutoSlide();
 }
 
-// --------------------------------------------------
+// ==========================================
+// ガチャ抽選ロジック
+// ==========================================
 
 function attemptGacha(times) {
-    const cost = times * 150;
+    const currentBanner = gachaBanners[currentBannerIndex];
+    const unitCost = currentBanner.cost || 150;
+    const totalCost = times * unitCost;
 
-    if (!consumeStones(cost)) {
-        if (confirm(`魔法石が足りません（必要: ${cost}個 / 所持: ${userStones}個）。\nショップへ移動しますか？`)) {
+    if (!consumeStones(totalCost)) {
+        if (confirm(`魔法石が足りません（必要: ${totalCost}個 / 所持: ${userStones}個）。\nショップへ移動しますか？`)) {
             playSE('click');
             openShop();
         }
@@ -238,18 +329,56 @@ function startGachaProcess(times) {
     stoneDisplay.classList.add('hidden');
     clearInterval(autoSlideInterval);
 
+    const currentBanner = gachaBanners[currentBannerIndex];
+
     currentResults = [];
     for (let i = 0; i < times; i++) {
-        const rarity = pickRarity();
-        const char = pickCharacterByRarity(rarity);
+        const rarity = pickRarityDynamic(currentBanner.rates);
+        const char = pickCharacterWithPickup(rarity, currentBanner);
+        
         currentResults.push(char);
         addToCollection(char.id);
     }
+    
     currentIndex = 0;
     mainScreen.classList.add('hidden');
     overlay.classList.remove('hidden');
     updateOverlayImage();
 }
+
+function pickRarityDynamic(rates) {
+    const rand = Math.random() * 100;
+    let total = 0;
+    
+    for (const rarity in rates) {
+        total += rates[rarity];
+        if (rand < total) {
+            return rarity;
+        }
+    }
+    return Object.keys(rates).pop(); 
+}
+
+function pickCharacterWithPickup(rarity, banner) {
+    let charsOfRarity = characterList.filter(c => c.rarity === rarity);
+
+    const exclusions = banner.excludedIds || [];
+    charsOfRarity = charsOfRarity.filter(c => !exclusions.includes(c.id));
+    
+    if (charsOfRarity.length === 0) return { id: '000', rarity: 'Error', title: 'Error', name: 'No Data' };
+
+    const pickupsInRarity = charsOfRarity.filter(c => banner.pickupIds.includes(c.id));
+    
+    if (pickupsInRarity.length > 0 && Math.random() < banner.pickupRate) {
+        return pickupsInRarity[Math.floor(Math.random() * pickupsInRarity.length)];
+    } else {
+        return charsOfRarity[Math.floor(Math.random() * charsOfRarity.length)];
+    }
+}
+
+// ==========================================
+// 演出・表示関連
+// ==========================================
 
 function addToCollection(id) {
     if (!userCollection.includes(id)) {
@@ -280,7 +409,8 @@ function updateOverlayImage() {
         flashEffect.classList.add('play-flash');
     }
 
-    fsRarity.innerHTML = `<img src="rarity/${char.rarity}.png" onerror="this.src='rarity/${char.rarity}.jpg'" class="rarity-icon-large">`;
+    // ★修正：レアリティクラスを追加 (rarity-UR など)
+    fsRarity.innerHTML = `<img src="rarity/${char.rarity}.png" onerror="this.src='rarity/${char.rarity}.jpg'" class="rarity-icon-large rarity-${char.rarity}">`;
     fsTitle.textContent = char.title;
     fsName.textContent = char.name;
 
@@ -312,22 +442,17 @@ function showResultList() {
     createGridItems(currentResults, resultGrid);
 }
 
-// ★修正：コレクション画面表示（ソート処理追加）
 function showCollectionScreen() {
     mainScreen.classList.add('hidden');
     collectionScreen.classList.remove('hidden');
 
-    // 1. 持っているキャラを抽出
     let ownedChars = characterList.filter(char => userCollection.includes(char.id));
 
-    // 2. レアリティの優先順位を定義
-    const rarityPriority = { 'SSR': 3, 'SR': 2, 'R': 1 };
+    const rarityPriority = { 'UR': 4, 'SSR': 3, 'SR': 2, 'R': 1 };
 
-    // 3. ソート実行 (SSR > SR > R の順)
     ownedChars.sort((a, b) => {
         const priorityA = rarityPriority[a.rarity] || 0;
         const priorityB = rarityPriority[b.rarity] || 0;
-        // 降順（数字が大きい方が先）
         return priorityB - priorityA;
     });
 
@@ -340,10 +465,11 @@ function createGridItems(chars, container) {
         const card = document.createElement('div');
         card.className = `result-card rarity-${char.rarity}`;
 
+        // ★修正：レアリティクラスを追加 (rarity-UR など)
         card.innerHTML = `
             <img src="character/${char.id}.png" onerror="this.src='character/${char.id}.jpg'" class="char-img">
             <div class="card-info-overlay">
-                <img src="rarity/${char.rarity}.png" onerror="this.src='rarity/${char.rarity}.jpg'" class="rarity-icon-small">
+                <img src="rarity/${char.rarity}.png" onerror="this.src='rarity/${char.rarity}.jpg'" class="rarity-icon-small rarity-${char.rarity}">
                 <div class="card-name-group">
                     <span class="card-title">${char.title}</span>
                     <span class="card-name">${char.name}</span>
@@ -357,7 +483,8 @@ function createGridItems(chars, container) {
             modalImg.src = `character/${char.id}.png`;
             modalImg.onerror = function () { this.src = `character/${char.id}.jpg`; };
 
-            modalRarity.innerHTML = `<img src="rarity/${char.rarity}.png" onerror="this.src='rarity/${char.rarity}.jpg'" class="rarity-icon-large">`;
+            // ★修正：レアリティクラスを追加 (rarity-UR など)
+            modalRarity.innerHTML = `<img src="rarity/${char.rarity}.png" onerror="this.src='rarity/${char.rarity}.jpg'" class="rarity-icon-large rarity-${char.rarity}">`;
             modalTitle.textContent = char.title;
             modalName.textContent = char.name;
             imageModal.classList.remove('hidden');
@@ -372,17 +499,4 @@ function resetToTitle() {
     resultScreen.classList.add('hidden');
     mainScreen.classList.remove('hidden');
     resetAutoSlide();
-}
-
-function pickRarity() {
-    const r = Math.random() * 100;
-    if (r < dropRates.SSR) return 'SSR';
-    if (r < dropRates.SSR + dropRates.SR) return 'SR';
-    return 'R';
-}
-
-function pickCharacterByRarity(rarity) {
-    const list = characterList.filter(c => c.rarity === rarity);
-    if (list.length === 0) return { id: '000', rarity: 'Error', title: 'Error', name: 'No Data' };
-    return list[Math.floor(Math.random() * list.length)];
 }

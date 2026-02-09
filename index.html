@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>テストで作ったガチャ</title>
+    <title>Code: Xeno</title>
     <link rel="stylesheet" href="CS.css">
     <link rel="stylesheet" href="money.css">
 </head>
@@ -25,9 +25,13 @@
 
     <div class="gacha-container" id="main-screen">
         <header>
-            <h1>始まりの出会い</h1>
-            <p>期間限定キャラをGETしよう！</p>
+            <h1>新たな出会い</h1>
+            <p>新たな仲間をGETしよう！</p>
         </header>
+
+        <div class="gacha-title-container">
+            <h2 id="current-gacha-title">ガチャ名読み込み中...</h2>
+        </div>
 
         <div class="banner-wrapper">
             <button id="banner-prev" class="nav-arrow left-arrow">
@@ -65,7 +69,7 @@
                 <span class="btn-label">1 連</span>
                 <div class="btn-cost-row">
                     <img src="isi/isi.png" class="btn-cost-icon">
-                    <span class="cost-text">150</span>
+                    <span class="cost-text" id="cost-text-1">150</span>
                 </div>
             </button>
             
@@ -73,12 +77,13 @@
                 <span class="btn-label">10 連</span>
                 <div class="btn-cost-row">
                     <img src="isi/isi.png" class="btn-cost-icon">
-                    <span class="cost-text">1500</span>
+                    <span class="cost-text" id="cost-text-10">1500</span>
                 </div>
             </button>
             
             <button id="collection-btn" class="gacha-btn list-btn">一覧</button>
         </div>
+
     </div>
 
     <div id="result-screen" class="hidden">
@@ -124,6 +129,7 @@
     <div id="shop-modal" class="hidden">
         <div class="shop-content">
             <button id="shop-close-btn" class="shop-back-btn">戻る</button>
+            
             <div id="shop-step-age">
                 <h2>年齢確認</h2>
                 <div class="age-buttons">
@@ -132,10 +138,12 @@
                     <button onclick="setAgeLimit(2)">20歳以上 (上限なし)</button>
                 </div>
             </div>
+
             <div id="shop-step-product" class="hidden">
                 <h2>魔法石ショップ</h2>
                 <div class="product-grid"></div>
             </div>
+
             <div id="shop-step-payment" class="hidden">
                 <h2>お支払い</h2>
                 <p id="payment-target-info"></p>
