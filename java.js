@@ -148,7 +148,6 @@ const costText10 = document.getElementById('cost-text-10');
 
 // バナー用要素
 const bannerContent = document.querySelector('.banner-content');
-const bannerOverlay = document.querySelector('.banner-overlay');
 const bannerImg = document.getElementById('banner-img');
 const bannerRarity = document.getElementById('banner-rarity');
 const bannerTitle = document.getElementById('banner-title');
@@ -267,23 +266,38 @@ function changeVisual(direction) {
     updateBannerDisplay();
 }
 
+// ★UR判定を行い、表示モード（mode-UR）を切り替える重要な関数
 function updateBannerDisplay() {
     const banner = gachaBanners[currentBannerIndex];
     
+    // 現在のビジュアル情報を取得
     const visualInfo = banner.visuals[currentVisualIndex];
     const targetChar = characterList.find(c => c.id === visualInfo.imgId);
+    
+    // レアリティ取得（キャラが見つからない場合はSSRとする）
     const rarity = targetChar ? targetChar.rarity : 'SSR';
 
+    // ★URの時だけ、親要素に「mode-UR」クラスをつける（CSSで表示切替するため）
+    const bannerWrapper = document.querySelector('.banner-wrapper');
+    if (rarity === 'UR') {
+        bannerWrapper.classList.add('mode-UR');
+    } else {
+        bannerWrapper.classList.remove('mode-UR');
+    }
+
+    // ガチャタイトルの更新
     currentGachaTitle.textContent = banner.gachaTitle;
 
+    // ボタンのコスト表示を更新
     const currentCost = banner.cost || 150;
     if (costText1) costText1.textContent = currentCost;
     if (costText10) costText10.textContent = currentCost * 10;
 
+    // 画像とテキストの更新
     bannerImg.src = `character/${visualInfo.imgId}.png`;
     bannerImg.onerror = function () { this.src = `character/${visualInfo.imgId}.jpg`; };
 
-    // ★修正：レアリティクラスを追加 (rarity-UR など)
+    // レアリティ画像（クラス付与）
     bannerRarity.innerHTML = `<img src="rarity/${rarity}.png" onerror="this.src='rarity/${rarity}.jpg'" class="rarity-${rarity}">`;
 
     bannerTitle.textContent = visualInfo.title;
@@ -409,7 +423,6 @@ function updateOverlayImage() {
         flashEffect.classList.add('play-flash');
     }
 
-    // ★修正：レアリティクラスを追加 (rarity-UR など)
     fsRarity.innerHTML = `<img src="rarity/${char.rarity}.png" onerror="this.src='rarity/${char.rarity}.jpg'" class="rarity-icon-large rarity-${char.rarity}">`;
     fsTitle.textContent = char.title;
     fsName.textContent = char.name;
@@ -465,7 +478,6 @@ function createGridItems(chars, container) {
         const card = document.createElement('div');
         card.className = `result-card rarity-${char.rarity}`;
 
-        // ★修正：レアリティクラスを追加 (rarity-UR など)
         card.innerHTML = `
             <img src="character/${char.id}.png" onerror="this.src='character/${char.id}.jpg'" class="char-img">
             <div class="card-info-overlay">
@@ -483,7 +495,6 @@ function createGridItems(chars, container) {
             modalImg.src = `character/${char.id}.png`;
             modalImg.onerror = function () { this.src = `character/${char.id}.jpg`; };
 
-            // ★修正：レアリティクラスを追加 (rarity-UR など)
             modalRarity.innerHTML = `<img src="rarity/${char.rarity}.png" onerror="this.src='rarity/${char.rarity}.jpg'" class="rarity-icon-large rarity-${char.rarity}">`;
             modalTitle.textContent = char.title;
             modalName.textContent = char.name;
