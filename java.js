@@ -179,7 +179,7 @@ startAutoSlide();
 // イベント
 // ==========================================
 
-// 左右矢印：ガチャの種類を変更
+// 左右矢印
 bannerPrev.addEventListener('click', () => {
     playSE('click');
     changeBanner(-1);
@@ -190,7 +190,7 @@ bannerNext.addEventListener('click', () => {
     changeBanner(1);
 });
 
-// 画像をタップで「表示キャラ」を変更
+// 画像をタップで変更
 if (bannerContent) {
     bannerContent.addEventListener('click', () => {
         playSE('click');
@@ -266,29 +266,15 @@ function changeVisual(direction) {
     updateBannerDisplay();
 }
 
-// ★UR判定を行い、表示モード（mode-UR）を切り替える重要な関数
+// ★標準の表示更新関数に戻しました（クラス切り替え等の複雑な処理を削除）
 function updateBannerDisplay() {
     const banner = gachaBanners[currentBannerIndex];
-    
-    // 現在のビジュアル情報を取得
     const visualInfo = banner.visuals[currentVisualIndex];
     const targetChar = characterList.find(c => c.id === visualInfo.imgId);
-    
-    // レアリティ取得（キャラが見つからない場合はSSRとする）
     const rarity = targetChar ? targetChar.rarity : 'SSR';
 
-    // ★URの時だけ、親要素に「mode-UR」クラスをつける（CSSで表示切替するため）
-    const bannerWrapper = document.querySelector('.banner-wrapper');
-    if (rarity === 'UR') {
-        bannerWrapper.classList.add('mode-UR');
-    } else {
-        bannerWrapper.classList.remove('mode-UR');
-    }
-
-    // ガチャタイトルの更新
+    // タイトルとコスト更新
     currentGachaTitle.textContent = banner.gachaTitle;
-
-    // ボタンのコスト表示を更新
     const currentCost = banner.cost || 150;
     if (costText1) costText1.textContent = currentCost;
     if (costText10) costText10.textContent = currentCost * 10;
@@ -297,7 +283,7 @@ function updateBannerDisplay() {
     bannerImg.src = `character/${visualInfo.imgId}.png`;
     bannerImg.onerror = function () { this.src = `character/${visualInfo.imgId}.jpg`; };
 
-    // レアリティ画像（クラス付与）
+    // レアリティ画像（ここに class="rarity-UR" 等が入るのでCSSで色は変わります）
     bannerRarity.innerHTML = `<img src="rarity/${rarity}.png" onerror="this.src='rarity/${rarity}.jpg'" class="rarity-${rarity}">`;
 
     bannerTitle.textContent = visualInfo.title;

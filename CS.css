@@ -27,7 +27,7 @@ body {
     position: relative; z-index: 10;
 }
 
-/* ★修正：ガチャタイトルを以前のデザイン（青ライン＆黒グラデ）に戻す */
+/* ガチャタイトル（青ライン＆黒グラデ） */
 .gacha-title-container {
     width: 100%; text-align: center;
     margin-bottom: 10px;
@@ -35,16 +35,13 @@ body {
 }
 #current-gacha-title {
     display: inline-block;
-    /* 黒のグラデーション背景 */
     background: linear-gradient(90deg, transparent, #000, transparent);
-    color: #fff; /* 文字は白 */
+    color: #fff;
     padding: 10px 60px;
     font-size: 24px; 
     font-weight: bold;
-    /* 上下の青いライン */
     border-top: 2px solid #4a90e2;
     border-bottom: 2px solid #4a90e2;
-    /* 青い光彩 */
     text-shadow: 0 0 10px #4a90e2;
     margin: 0;
 }
@@ -84,25 +81,33 @@ body {
     pointer-events: none;
 }
 
+/* --------------------------------------
+   レアリティ画像の配置 (全レアリティ共通)
+   -------------------------------------- */
 #banner-rarity {
     position: absolute;
     bottom: 40px; left: 50px;
+    /* UR専用のサイズ変更を削除し、固定位置・サイズに戻しました */
 }
 #banner-rarity img {
     height: 120px; width: auto;
     filter: drop-shadow(0 2px 5px rgba(0,0,0,0.8));
 }
 
-/* URのオーラ設定 */
+/* URのオーラ（色だけ紫に） */
 img.rarity-UR {
     filter: drop-shadow(0 0 5px #d000ff) drop-shadow(0 0 10px #d000ff);
     animation: pulseUR 2s infinite alternate;
 }
 
+/* --------------------------------------
+   キャラ名位置 (全レアリティ共通)
+   -------------------------------------- */
 .banner-text-group {
     position: absolute;
     bottom: 40px;
-    left: 280px;
+    /* UR専用の位置ズレを削除し、固定位置に戻しました */
+    left: 280px; 
     text-align: left;
 }
 #banner-title {
@@ -321,9 +326,7 @@ body.hide-info #modal-text-container { opacity: 0; }
    6. スマホ・タブレット対応（レスポンシブ）
    ========================================== */
 
-/* --------------------------------------
-   A. 縦画面の時の設定 (警告を出してゲームを隠す)
-   -------------------------------------- */
+/* A. 縦画面の時の設定 (警告を出してゲームを隠す) */
 #rotate-warning {
     display: none; /* 通常は隠す */
 }
@@ -358,9 +361,7 @@ body.hide-info #modal-text-container { opacity: 0; }
     }
 }
 
-/* --------------------------------------
-   B. 横画面の時の設定 (要素を小さくして収める)
-   -------------------------------------- */
+/* B. 横画面の時の設定 (要素を小さくして収める) */
 @media screen and (orientation: landscape) and (max-height: 600px) {
     /* 画面の高さいっぱいを使う */
     .gacha-container {
@@ -391,7 +392,7 @@ body.hide-info #modal-text-container { opacity: 0; }
     /* 名前とタイトルの位置調整 */
     .banner-text-group { left: 140px; bottom: 10px; }
 
-    /* 説明文や期間は、画面が狭いので非表示にする（スッキリさせるため） */
+    /* 説明文や期間は、画面が狭いので非表示にする */
     .banner-desc-box, .banner-period-box {
         display: none;
     }
