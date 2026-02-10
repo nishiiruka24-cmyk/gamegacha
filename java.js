@@ -124,6 +124,10 @@ const fullscreenImg = document.getElementById('fullscreen-img');
 const skipBtn = document.getElementById('skip-btn');
 const flashEffect = document.getElementById('flash-effect');
 
+// ★追加：ロード画面用要素
+const loadingScreen = document.getElementById('loading-screen');
+const loadingText = document.getElementById('loading-text');
+
 const fsRarity = document.getElementById('fs-rarity');
 const fsTitle = document.getElementById('fs-title');
 const fsName = document.getElementById('fs-name');
@@ -146,7 +150,6 @@ const currentGachaTitle = document.getElementById('current-gacha-title');
 const costText1 = document.getElementById('cost-text-1');
 const costText10 = document.getElementById('cost-text-10');
 
-// バナー用要素
 const bannerContent = document.querySelector('.banner-content');
 const bannerImg = document.getElementById('banner-img');
 const bannerRarity = document.getElementById('banner-rarity');
@@ -163,31 +166,20 @@ const bannerNext = document.getElementById('banner-next');
 let currentResults = [];
 let currentIndex = 0;
 let userCollection = [];
+let characterCounts = {};
 
 let currentBannerIndex = 0;
 let currentVisualIndex = 0;
-
 let autoSlideInterval;
 
 // ==========================================
-// 初期化処理
+// 初期化・イベント
 // ==========================================
-updateBannerDisplay();
-startAutoSlide();
+// ★画像プリロード処理を開始
+startPreloading();
 
-// ==========================================
-// イベント
-// ==========================================
-
-bannerPrev.addEventListener('click', () => {
-    playSE('click');
-    changeBanner(-1);
-});
-
-bannerNext.addEventListener('click', () => {
-    playSE('click');
-    changeBanner(1);
-});
+bannerPrev.addEventListener('click', () => { playSE('click'); changeBanner(-1); });
+bannerNext.addEventListener('click', () => { playSE('click'); changeBanner(1); });
 
 if (bannerContent) {
     bannerContent.addEventListener('click', () => {
@@ -197,58 +189,90 @@ if (bannerContent) {
     });
 }
 
-document.getElementById('draw-1-btn').addEventListener('click', () => {
-    playSE('click');
-    attemptGacha(1);
-});
-
-document.getElementById('draw-10-btn').addEventListener('click', () => {
-    playSE('click');
-    attemptGacha(10);
-});
+document.getElementById('draw-1-btn').addEventListener('click', () => { playSE('click'); attemptGacha(1); });
+document.getElementById('draw-10-btn').addEventListener('click', () => { playSE('click'); attemptGacha(10); });
 
 overlay.addEventListener('click', (e) => {
     if (e.target === skipBtn) return;
     showNextImage();
 });
 
-skipBtn.addEventListener('click', () => {
-    playSE('click');
-    showResultList();
-});
-
-resultScreen.addEventListener('click', () => {
-    playSE('click');
-    resetToTitle();
-});
-
+skipBtn.addEventListener('click', () => { playSE('click'); showResultList(); });
+resultScreen.addEventListener('click', () => { playSE('click'); resetToTitle(); });
 imageModal.addEventListener('click', () => imageModal.classList.add('hidden'));
 
-collectionBtn.addEventListener('click', () => {
-    playSE('click');
-    showCollectionScreen();
-});
+collectionBtn.addEventListener('click', () => { playSE('click'); showCollectionScreen(); });
+colBackBtn.addEventListener('click', () => { playSE('click'); collectionScreen.classList.add('hidden'); mainScreen.classList.remove('hidden'); });
+colToggleBtn.addEventListener('click', () => { playSE('click'); document.body.classList.toggle('hide-info'); });
 
-colBackBtn.addEventListener('click', () => {
-    playSE('click');
-    collectionScreen.classList.add('hidden');
-    mainScreen.classList.remove('hidden');
-});
-
-colToggleBtn.addEventListener('click', () => {
-    playSE('click');
-    document.body.classList.toggle('hide-info');
-});
 
 // ==========================================
-// ロジック
+// ★画像先読みロジック（ローディング画面制御）
+// ==========================================
+function startPreloading() {
+    const imagesToLoad = [];
+    
+    // 1. レアリティ画像のパス収集
+    ['R', 'SR', 'SSR', 'UR'].forEach(r => {
+        imagesToLoad.push(`rarity/${r}.png`);
+    });
+
+    // 2. キャラクター画像のパス収集
+    characterList.forEach(char => {
+        imagesToLoad.push(`character/${char.id}.png`);
+    });
+
+    let loadedCount = 0;
+    const totalCount = imagesToLoad.length;
+
+    // 画像を一つずつ読み込む
+    imagesToLoad.forEach(src => {
+        const img = new Image();
+        img.onload = () => {
+            loadedCount++;
+            updateLoadingProgress(loadedCount, totalCount);
+        };
+        img.onerror = () => {
+            // エラーでもカウントは進める（止まらないように）
+            loadedCount++;
+            updateLoadingProgress(loadedCount, totalCount);
+        };
+        img.src = src;
+    });
+
+    // 初期化処理も裏でやっておく
+    updateBannerDisplay();
+    startAutoSlide();
+}
+
+function updateLoadingProgress(current, total) {
+    const percentage = Math.floor((current / total) * 100);
+    if (loadingText) {
+        loadingText.textContent = `Loading... ${percentage}%`;
+    }
+
+    // 全て読み終わったら
+    if (current >= total) {
+        setTimeout(() => {
+            if (loadingScreen) {
+                loadingScreen.classList.add('fade-out'); // CSSでフェードアウト
+                setTimeout(() => {
+                    loadingScreen.style.display = 'none'; // 完全に消す
+                }, 500); // 0.5秒後に消去
+            }
+        }, 500); // 100%になってから少しだけ待つ
+    }
+}
+
+
+// ==========================================
+// 通常ロジック
 // ==========================================
 
 function changeBanner(direction) {
     currentBannerIndex += direction;
     if (currentBannerIndex >= gachaBanners.length) currentBannerIndex = 0;
     if (currentBannerIndex < 0) currentBannerIndex = gachaBanners.length - 1;
-    
     currentVisualIndex = 0;
     updateBannerDisplay();
     resetAutoSlide();
@@ -257,10 +281,8 @@ function changeBanner(direction) {
 function changeVisual(direction) {
     const banner = gachaBanners[currentBannerIndex];
     if (!banner.visuals || banner.visuals.length === 0) return;
-
     currentVisualIndex += direction;
     if (currentVisualIndex >= banner.visuals.length) currentVisualIndex = 0;
-    
     updateBannerDisplay();
 }
 
@@ -277,44 +299,24 @@ function updateBannerDisplay() {
 
     bannerImg.src = `character/${visualInfo.imgId}.png`;
     bannerImg.onerror = function () { this.src = `character/${visualInfo.imgId}.jpg`; };
-
     bannerRarity.innerHTML = `<img src="rarity/${rarity}.png" onerror="this.src='rarity/${rarity}.jpg'" class="rarity-${rarity}">`;
-
     bannerTitle.textContent = visualInfo.title;
     bannerName.textContent = visualInfo.name;
-    
     bannerDesc.innerHTML = banner.desc;
     bannerPeriod.textContent = banner.period;
 }
 
-function startAutoSlide() {
-    autoSlideInterval = setInterval(() => {
-        changeVisual(1);
-    }, 5000);
-}
-
-function resetAutoSlide() {
-    clearInterval(autoSlideInterval);
-    startAutoSlide();
-}
-
-// ==========================================
-// ガチャ抽選ロジック
-// ==========================================
+function startAutoSlide() { autoSlideInterval = setInterval(() => { changeVisual(1); }, 5000); }
+function resetAutoSlide() { clearInterval(autoSlideInterval); startAutoSlide(); }
 
 function attemptGacha(times) {
     const currentBanner = gachaBanners[currentBannerIndex];
     const unitCost = currentBanner.cost || 150;
     const totalCost = times * unitCost;
-
     if (!consumeStones(totalCost)) {
-        if (confirm(`魔法石が足りません。ショップへ移動しますか？`)) {
-            playSE('click');
-            openShop();
-        }
+        if (confirm(`魔法石が足りません。ショップへ移動しますか？`)) { playSE('click'); openShop(); }
         return;
     }
-
     startGachaProcess(times);
 }
 
@@ -322,18 +324,14 @@ function startGachaProcess(times) {
     playSE('gacha');
     stoneDisplay.classList.add('hidden');
     clearInterval(autoSlideInterval);
-
     const currentBanner = gachaBanners[currentBannerIndex];
-
     currentResults = [];
     for (let i = 0; i < times; i++) {
         const rarity = pickRarityDynamic(currentBanner.rates);
         const char = pickCharacterWithPickup(rarity, currentBanner);
-        
         currentResults.push(char);
         addToCollection(char.id);
     }
-    
     currentIndex = 0;
     mainScreen.classList.add('hidden');
     overlay.classList.remove('hidden');
@@ -343,26 +341,19 @@ function startGachaProcess(times) {
 function pickRarityDynamic(rates) {
     const rand = Math.random() * 100;
     let total = 0;
-    
     for (const rarity in rates) {
         total += rates[rarity];
-        if (rand < total) {
-            return rarity;
-        }
+        if (rand < total) return rarity;
     }
     return Object.keys(rates).pop(); 
 }
 
 function pickCharacterWithPickup(rarity, banner) {
     let charsOfRarity = characterList.filter(c => c.rarity === rarity);
-
     const exclusions = banner.excludedIds || [];
     charsOfRarity = charsOfRarity.filter(c => !exclusions.includes(c.id));
-    
     if (charsOfRarity.length === 0) return { id: '000', rarity: 'Error', title: 'Error', name: 'No Data' };
-
     const pickupsInRarity = charsOfRarity.filter(c => banner.pickupIds.includes(c.id));
-    
     if (pickupsInRarity.length > 0 && Math.random() < banner.pickupRate) {
         return pickupsInRarity[Math.floor(Math.random() * pickupsInRarity.length)];
     } else {
@@ -370,31 +361,26 @@ function pickCharacterWithPickup(rarity, banner) {
     }
 }
 
-// ==========================================
-// 演出・表示関連
-// ==========================================
-
 function addToCollection(id) {
-    if (!userCollection.includes(id)) {
-        userCollection.push(id);
-    }
+    if (!characterCounts[id]) { characterCounts[id] = 0; }
+    characterCounts[id]++;
+    if (!userCollection.includes(id)) { userCollection.push(id); }
 }
 
 function showNextImage() {
     currentIndex++;
-    if (currentIndex < currentResults.length) {
-        updateOverlayImage();
-    } else {
-        showResultList();
-    }
+    if (currentIndex < currentResults.length) updateOverlayImage();
+    else showResultList();
 }
 
 function updateOverlayImage() {
     const char = currentResults[currentIndex];
-
     fullscreenImg.style.opacity = '0';
+    fullscreenImg.classList.remove('effect-shake', 'effect-pop');
+    void fullscreenImg.offsetWidth;
+    
     resetTextAnimation();
-
+    
     if (flashEffect) {
         flashEffect.className = '';
         flashEffect.classList.add(`flash-${char.rarity}`);
@@ -402,61 +388,68 @@ function updateOverlayImage() {
         void flashEffect.offsetWidth;
         flashEffect.classList.add('play-flash');
     }
-
+    
     fsRarity.innerHTML = `<img src="rarity/${char.rarity}.png" onerror="this.src='rarity/${char.rarity}.jpg'" class="rarity-icon-large rarity-${char.rarity}">`;
     fsTitle.textContent = char.title;
     fsName.textContent = char.name;
-
+    
     fullscreenImg.src = `character/${char.id}.png`;
     fullscreenImg.onerror = function () { this.src = `character/${char.id}.jpg`; };
-
+    
     setTimeout(() => {
         playSE('result');
-
-        fullscreenImg.style.animation = 'none';
-        fullscreenImg.style.opacity = '1';
+        if (char.rarity === 'SSR' || char.rarity === 'UR') {
+            fullscreenImg.style.opacity = '1';
+            fullscreenImg.classList.add('effect-shake');
+        } else {
+            fullscreenImg.style.opacity = '1';
+            fullscreenImg.classList.add('effect-pop');
+        }
         startTextAnimation();
     }, 100);
 }
 
-function resetTextAnimation() {
-    fsRarity.className = ''; fsTitle.className = ''; fsName.className = '';
-}
-function startTextAnimation() {
-    fsRarity.classList.add('slide-in');
-    fsTitle.classList.add('slide-in-delay-1');
-    fsName.classList.add('slide-in-delay-2');
-}
+function resetTextAnimation() { fsRarity.className = ''; fsTitle.className = ''; fsName.className = ''; }
+function startTextAnimation() { fsRarity.classList.add('slide-in'); fsTitle.classList.add('slide-in-delay-1'); fsName.classList.add('slide-in-delay-2'); }
 
 function showResultList() {
     stoneDisplay.classList.remove('hidden');
     overlay.classList.add('hidden');
     resultScreen.classList.remove('hidden');
-    createGridItems(currentResults, resultGrid);
+    createGridItems(currentResults, resultGrid, false); 
 }
 
 function showCollectionScreen() {
     mainScreen.classList.add('hidden');
     collectionScreen.classList.remove('hidden');
-
+    
     let ownedChars = characterList.filter(char => userCollection.includes(char.id));
-
     const rarityPriority = { 'UR': 4, 'SSR': 3, 'SR': 2, 'R': 1 };
-
+    
     ownedChars.sort((a, b) => {
         const priorityA = rarityPriority[a.rarity] || 0;
         const priorityB = rarityPriority[b.rarity] || 0;
-        return priorityB - priorityA;
+        if (priorityA !== priorityB) return priorityB - priorityA;
+        const countA = characterCounts[a.id] || 0;
+        const countB = characterCounts[b.id] || 0;
+        if (countA !== countB) return countB - countA;
+        return a.id.localeCompare(b.id);
     });
-
-    createGridItems(ownedChars, collectionGrid);
+    
+    createGridItems(ownedChars, collectionGrid, true); 
 }
 
-function createGridItems(chars, container) {
+function createGridItems(chars, container, isCollectionMode) {
     container.innerHTML = '';
     chars.forEach(char => {
+        const count = characterCounts[char.id] || 0;
         const card = document.createElement('div');
         card.className = `result-card rarity-${char.rarity}`;
+        
+        let badgeHtml = '';
+        if (isCollectionMode) {
+            badgeHtml = `<div class="char-count-badge">×${count}</div>`;
+        }
 
         card.innerHTML = `
             <img src="character/${char.id}.png" onerror="this.src='character/${char.id}.jpg'" class="char-img">
@@ -467,6 +460,7 @@ function createGridItems(chars, container) {
                     <span class="card-name">${char.name}</span>
                 </div>
             </div>
+            ${badgeHtml}
         `;
 
         card.addEventListener('click', (e) => {
@@ -474,13 +468,11 @@ function createGridItems(chars, container) {
             e.stopPropagation();
             modalImg.src = `character/${char.id}.png`;
             modalImg.onerror = function () { this.src = `character/${char.id}.jpg`; };
-
             modalRarity.innerHTML = `<img src="rarity/${char.rarity}.png" onerror="this.src='rarity/${char.rarity}.jpg'" class="rarity-icon-large rarity-${char.rarity}">`;
             modalTitle.textContent = char.title;
             modalName.textContent = char.name;
             imageModal.classList.remove('hidden');
         });
-
         container.appendChild(card);
     });
 }
