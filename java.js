@@ -8,7 +8,6 @@ const characterList = [
     { id: '003', rarity: 'SSR', title: '氷結と稲妻の申子', name: 'リノ' },
     { id: '004', rarity: 'SR', title: '異界の主人公', name: '八神 颯人' },
     { id: '005', rarity: 'R', title: '聖なる魔法', name: 'マリア' },
-    //{ id: '006', rarity: 'SSR', title: '著作権の侵害', name: 'キュアアルカナ・シャドウ' },
     { id: '007', rarity: 'R', title: '夏の荒波', name: '夏芽' },
     { id: '008', rarity: 'R', title: '秋の一矢', name: '紅葉' },
     { id: '009', rarity: 'SR', title: '孤高の天女', name: '雫' },
@@ -36,73 +35,48 @@ const characterList = [
     { id: '031', rarity: 'SR', title: '雷の一太刀', name: 'シオン' }
 ];
 
-// ==========================================
-// ★ガチャ（バナー）設定エリア
-// ==========================================
-/*
-  excludedIds: そのガチャから出現させたくないキャラIDのリストを追加しました。
-  空の配列 [] なら全キャラ（レアリティ抽選に従って）出現します。
-*/
-
 const gachaBanners = [
-    // --- ガチャ1 ---
     {
         id: 'banner_rino',
         gachaTitle: '【期間限定】孤高に舞う雪猫ガチャ',
         cost: 150,
         rates: { UR: 3, SSR: 5, SR: 15, R: 77 },
-        pickupIds: ['025'],
-        pickupRate: 1,
-        excludedIds: [], 
+        pickupIds: ['025'], pickupRate: 1, excludedIds: [], 
         desc: '猫耳の姿となったリノ。<br>氷山の中を駆け回る彼女を仲間にしよう！',
-        period: '期間：2/1 ~ 2/15',
-        visuals: [
-            { imgId: '025', title: '孤高に舞う雪猫', name: 'リノ（猫耳）' }
-        ]
+        period: '期間：無期限',
+        visuals: [{ imgId: '025', title: '孤高に舞う雪猫', name: 'リノ（猫耳）' }]
     },
     {
-        id: 'banner_rino',
+        id: 'banner_rino2',
         gachaTitle: '【日替わりピックアップ】氷結と稲妻ピックアップガチャ',
         cost: 150,
         rates: { SSR: 5, SR: 15, R: 80 },
-        pickupIds: ['003'],
-        pickupRate: 0.7,
-        excludedIds: ['025'], 
+        pickupIds: ['003'], pickupRate: 0.7, excludedIds: ['025'], 
         desc: '強力な氷と雷を操る少女。<br>強力な攻撃で敵を倒す彼女を仲間にしよう！',
-        period: '期間：2/1 ~ 2/15',
-        visuals: [
-            { imgId: '003', title: '氷結と稲妻の申子', name: 'リノ' }
-        ]
+        period: '期間：無期限',
+        visuals: [{ imgId: '003', title: '氷結と稲妻の申子', name: 'リノ' }]
     },
-    // --- ガチャ2 ---
     {
         id: 'banner_double',
         gachaTitle: '【イベント】春花＆ソラ ダブルピックアップ',
         cost: 150,
         rates: { SSR: 5, SR: 15, R: 80 },
-        pickupIds: ['001', '002'],
-        pickupRate: 0.5,
-        // ★ここ：除外なし（全員出る）
-        excludedIds: ['025'], 
+        pickupIds: ['001', '002'], pickupRate: 0.5, excludedIds: ['025'], 
         desc: '春花とソラがダブルピックアップ！<br>二人の天才をチームに加えるチャンス。',
-        period: '期間：2/1 ~ 2/15',
+        period: '期間：無期限',
         visuals: [
             { imgId: '001', title: '春を切り裂く風', name: '春花' },
             { imgId: '002', title: '実験開始の合図', name: 'ソラ' }
         ]
     },
-    // --- ガチャ3 ---
     {
         id: 'banner_fest',
         gachaTitle: '【祝】サービス開始記念ドリームフェス',
         cost: 150,
         rates: { SSR: 10, SR: 20, R: 70 },
-        pickupIds: [],
-        pickupRate: 1,
-        // ★ここ：このガチャでの除外設定
-        excludedIds: ['025'], 
+        pickupIds: [], pickupRate: 1, excludedIds: ['025'], 
         desc: 'SSR確率2倍！<br>最強のキャラたちを手に入れるチャンス。',
-        period: '期間：2/9 ~ 2/11',
+        period: '期間：無期限',
         visuals: [
             { imgId: '001', title: '春を切り裂く風', name: '春花' },
             { imgId: '002', title: '実験開始の合図', name: 'ソラ' },
@@ -124,7 +98,6 @@ const fullscreenImg = document.getElementById('fullscreen-img');
 const skipBtn = document.getElementById('skip-btn');
 const flashEffect = document.getElementById('flash-effect');
 
-// ★追加：ロード画面用要素
 const loadingScreen = document.getElementById('loading-screen');
 const loadingText = document.getElementById('loading-text');
 
@@ -143,6 +116,13 @@ const collectionGrid = document.getElementById('collection-grid');
 const colBackBtn = document.getElementById('col-back-btn');
 const colToggleBtn = document.getElementById('col-toggle-btn');
 const collectionBtn = document.getElementById('collection-btn');
+
+const lineupBtn = document.getElementById('lineup-btn');
+const lineupScreen = document.getElementById('lineup-screen');
+const lineupGrid = document.getElementById('lineup-grid');
+const lineupBackBtn = document.getElementById('lineup-back-btn');
+const setHomeBtn = document.getElementById('set-home-btn');
+const modalCloseBtn = document.getElementById('modal-close-btn');
 
 const stoneDisplay = document.getElementById('stone-display');
 const currentGachaTitle = document.getElementById('current-gacha-title');
@@ -175,100 +155,124 @@ let autoSlideInterval;
 // ==========================================
 // 初期化・イベント
 // ==========================================
-// ★画像プリロード処理を開始
 startPreloading();
 
-bannerPrev.addEventListener('click', () => { playSE('click'); changeBanner(-1); });
-bannerNext.addEventListener('click', () => { playSE('click'); changeBanner(1); });
+bannerPrev.addEventListener('click', () => { if (typeof playSE === 'function') playSE('click'); changeBanner(-1); });
+bannerNext.addEventListener('click', () => { if (typeof playSE === 'function') playSE('click'); changeBanner(1); });
 
 if (bannerContent) {
     bannerContent.addEventListener('click', () => {
-        playSE('click');
+        if (typeof playSE === 'function') playSE('click');
         changeVisual(1);
         resetAutoSlide();
     });
 }
 
-document.getElementById('draw-1-btn').addEventListener('click', () => { playSE('click'); attemptGacha(1); });
-document.getElementById('draw-10-btn').addEventListener('click', () => { playSE('click'); attemptGacha(10); });
+document.getElementById('draw-1-btn').addEventListener('click', () => { if (typeof playSE === 'function') playSE('click'); attemptGacha(1); });
+document.getElementById('draw-10-btn').addEventListener('click', () => { if (typeof playSE === 'function') playSE('click'); attemptGacha(10); });
 
 overlay.addEventListener('click', (e) => {
     if (e.target === skipBtn) return;
     showNextImage();
 });
 
-skipBtn.addEventListener('click', () => { playSE('click'); showResultList(); });
-resultScreen.addEventListener('click', () => { playSE('click'); resetToTitle(); });
-imageModal.addEventListener('click', () => imageModal.classList.add('hidden'));
+skipBtn.addEventListener('click', () => { if (typeof playSE === 'function') playSE('click'); showResultList(); });
+resultScreen.addEventListener('click', () => { if (typeof playSE === 'function') playSE('click'); resetToGacha(); });
 
-collectionBtn.addEventListener('click', () => { playSE('click'); showCollectionScreen(); });
-colBackBtn.addEventListener('click', () => { playSE('click'); collectionScreen.classList.add('hidden'); mainScreen.classList.remove('hidden'); });
-colToggleBtn.addEventListener('click', () => { playSE('click'); document.body.classList.toggle('hide-info'); });
+if (collectionBtn) {
+    collectionBtn.addEventListener('click', () => { if (typeof playSE === 'function') playSE('click'); showCollectionScreen(); });
+}
+colBackBtn.addEventListener('click', () => { if (typeof playSE === 'function') playSE('click'); collectionScreen.classList.add('hidden'); });
+colToggleBtn.addEventListener('click', () => { if (typeof playSE === 'function') playSE('click'); document.body.classList.toggle('hide-info'); });
 
+if (lineupBtn) { lineupBtn.addEventListener('click', (e) => { e.stopPropagation(); if (typeof playSE === 'function') playSE('click'); showLineupScreen(); }); }
+if (lineupBackBtn) { lineupBackBtn.addEventListener('click', (e) => { e.stopPropagation(); if (typeof playSE === 'function') playSE('click'); lineupScreen.classList.add('hidden'); }); }
+
+if (modalCloseBtn) {
+    modalCloseBtn.addEventListener('click', (e) => {
+        e.stopPropagation(); if (typeof playSE === 'function') playSE('click'); imageModal.classList.add('hidden');
+    });
+}
+
+if (setHomeBtn) {
+    setHomeBtn.addEventListener('click', (e) => {
+        e.stopPropagation(); if (typeof playSE === 'function') playSE('click');
+        const homeCharImg = document.getElementById('home-char-img');
+        if (homeCharImg && modalImg) { homeCharImg.src = modalImg.src; }
+        imageModal.classList.add('hidden'); collectionScreen.classList.add('hidden'); changeScreen('home');
+    });
+}
 
 // ==========================================
-// ★画像先読みロジック（ローディング画面制御）
+// ★画面切り替え ＆ BGM連動システム
+// ==========================================
+function changeScreen(screenName) {
+    document.getElementById('title-screen').style.display = 'none';
+    document.getElementById('home-screen').style.display = 'none';
+    document.getElementById('main-screen').style.display = 'none';
+    document.getElementById('stone-display').style.display = 'flex'; 
+
+    if (screenName === 'title') {
+        document.getElementById('title-screen').style.display = 'flex';
+        document.getElementById('stone-display').style.display = 'none'; 
+        if (typeof playTitleBGM === 'function') playTitleBGM(); // タイトルBGM
+    } else if (screenName === 'home') {
+        document.getElementById('home-screen').style.display = 'flex';
+        if (typeof playHomeBGM === 'function') playHomeBGM(); // ホームBGM
+    } else if (screenName === 'gacha') {
+        document.getElementById('main-screen').style.display = 'flex';
+        if (typeof playGachaBGM === 'function') playGachaBGM(); // ガチャBGM
+    }
+}
+
+window.addEventListener('load', () => {
+    changeScreen('title');
+});
+
+function startGame() {
+    if (typeof playSE === 'function') playSE('click');
+    changeScreen('home'); 
+}
+
+// ==========================================
+// 画像先読み
 // ==========================================
 function startPreloading() {
     const imagesToLoad = [];
-    
-    // 1. レアリティ画像のパス収集
-    ['R', 'SR', 'SSR', 'UR'].forEach(r => {
-        imagesToLoad.push(`rarity/${r}.png`);
-    });
-
-    // 2. キャラクター画像のパス収集
-    characterList.forEach(char => {
-        imagesToLoad.push(`character/${char.id}.png`);
-    });
+    ['R', 'SR', 'SSR', 'UR'].forEach(r => { imagesToLoad.push(`rarity/${r}.png`); });
+    characterList.forEach(char => { imagesToLoad.push(`character/${char.id}.png`); });
 
     let loadedCount = 0;
     const totalCount = imagesToLoad.length;
 
-    // 画像を一つずつ読み込む
     imagesToLoad.forEach(src => {
         const img = new Image();
-        img.onload = () => {
-            loadedCount++;
-            updateLoadingProgress(loadedCount, totalCount);
-        };
-        img.onerror = () => {
-            // エラーでもカウントは進める（止まらないように）
-            loadedCount++;
-            updateLoadingProgress(loadedCount, totalCount);
-        };
+        img.onload = () => { loadedCount++; updateLoadingProgress(loadedCount, totalCount); };
+        img.onerror = () => { loadedCount++; updateLoadingProgress(loadedCount, totalCount); };
         img.src = src;
     });
 
-    // 初期化処理も裏でやっておく
     updateBannerDisplay();
     startAutoSlide();
 }
 
 function updateLoadingProgress(current, total) {
     const percentage = Math.floor((current / total) * 100);
-    if (loadingText) {
-        loadingText.textContent = `Loading... ${percentage}%`;
-    }
-
-    // 全て読み終わったら
+    if (loadingText) loadingText.textContent = `Loading... ${percentage}%`;
+    
     if (current >= total) {
         setTimeout(() => {
             if (loadingScreen) {
-                loadingScreen.classList.add('fade-out'); // CSSでフェードアウト
-                setTimeout(() => {
-                    loadingScreen.style.display = 'none'; // 完全に消す
-                }, 500); // 0.5秒後に消去
+                loadingScreen.classList.add('fade-out');
+                setTimeout(() => { loadingScreen.style.display = 'none'; }, 500);
             }
-        }, 500); // 100%になってから少しだけ待つ
+        }, 500);
     }
 }
 
-
 // ==========================================
-// 通常ロジック
+// ガチャ関連機能
 // ==========================================
-
 function changeBanner(direction) {
     currentBannerIndex += direction;
     if (currentBannerIndex >= gachaBanners.length) currentBannerIndex = 0;
@@ -311,18 +315,17 @@ function resetAutoSlide() { clearInterval(autoSlideInterval); startAutoSlide(); 
 
 function attemptGacha(times) {
     const currentBanner = gachaBanners[currentBannerIndex];
-    const unitCost = currentBanner.cost || 150;
-    const totalCost = times * unitCost;
+    const totalCost = times * (currentBanner.cost || 150);
     if (!consumeStones(totalCost)) {
-        if (confirm(`魔法石が足りません。ショップへ移動しますか？`)) { playSE('click'); openShop(); }
+        if (confirm(`魔法石が足りません。ショップへ移動しますか？`)) { if (typeof playSE === 'function') playSE('click'); openShop(); }
         return;
     }
     startGachaProcess(times);
 }
 
 function startGachaProcess(times) {
-    playSE('gacha');
-    stoneDisplay.classList.add('hidden');
+    if (typeof playSE === 'function') playSE('gacha');
+    stoneDisplay.style.display = 'none';
     clearInterval(autoSlideInterval);
     const currentBanner = gachaBanners[currentBannerIndex];
     currentResults = [];
@@ -333,7 +336,7 @@ function startGachaProcess(times) {
         addToCollection(char.id);
     }
     currentIndex = 0;
-    mainScreen.classList.add('hidden');
+    document.getElementById('main-screen').style.display = 'none';
     overlay.classList.remove('hidden');
     updateOverlayImage();
 }
@@ -378,7 +381,6 @@ function updateOverlayImage() {
     fullscreenImg.style.opacity = '0';
     fullscreenImg.classList.remove('effect-shake', 'effect-pop');
     void fullscreenImg.offsetWidth;
-    
     resetTextAnimation();
     
     if (flashEffect) {
@@ -392,19 +394,14 @@ function updateOverlayImage() {
     fsRarity.innerHTML = `<img src="rarity/${char.rarity}.png" onerror="this.src='rarity/${char.rarity}.jpg'" class="rarity-icon-large rarity-${char.rarity}">`;
     fsTitle.textContent = char.title;
     fsName.textContent = char.name;
-    
     fullscreenImg.src = `character/${char.id}.png`;
     fullscreenImg.onerror = function () { this.src = `character/${char.id}.jpg`; };
     
     setTimeout(() => {
-        playSE('result');
-        if (char.rarity === 'SSR' || char.rarity === 'UR') {
-            fullscreenImg.style.opacity = '1';
-            fullscreenImg.classList.add('effect-shake');
-        } else {
-            fullscreenImg.style.opacity = '1';
-            fullscreenImg.classList.add('effect-pop');
-        }
+        if (typeof playSE === 'function') playSE('result');
+        fullscreenImg.style.opacity = '1';
+        if (char.rarity === 'SSR' || char.rarity === 'UR') fullscreenImg.classList.add('effect-shake');
+        else fullscreenImg.classList.add('effect-pop');
         startTextAnimation();
     }, 100);
 }
@@ -413,16 +410,14 @@ function resetTextAnimation() { fsRarity.className = ''; fsTitle.className = '';
 function startTextAnimation() { fsRarity.classList.add('slide-in'); fsTitle.classList.add('slide-in-delay-1'); fsName.classList.add('slide-in-delay-2'); }
 
 function showResultList() {
-    stoneDisplay.classList.remove('hidden');
+    stoneDisplay.style.display = 'flex';
     overlay.classList.add('hidden');
     resultScreen.classList.remove('hidden');
     createGridItems(currentResults, resultGrid, false); 
 }
 
 function showCollectionScreen() {
-    mainScreen.classList.add('hidden');
     collectionScreen.classList.remove('hidden');
-    
     let ownedChars = characterList.filter(char => userCollection.includes(char.id));
     const rarityPriority = { 'UR': 4, 'SSR': 3, 'SR': 2, 'R': 1 };
     
@@ -439,6 +434,18 @@ function showCollectionScreen() {
     createGridItems(ownedChars, collectionGrid, true); 
 }
 
+function showLineupScreen() {
+    const currentBanner = gachaBanners[currentBannerIndex];
+    const exclusions = currentBanner.excludedIds || [];
+    let availableChars = characterList.filter(c => !exclusions.includes(c.id));
+    
+    const rarityPriority = { 'UR': 4, 'SSR': 3, 'SR': 2, 'R': 1 };
+    availableChars.sort((a, b) => rarityPriority[b.rarity] - rarityPriority[a.rarity]);
+
+    createGridItems(availableChars, lineupGrid, false);
+    lineupScreen.classList.remove('hidden');
+}
+
 function createGridItems(chars, container, isCollectionMode) {
     container.innerHTML = '';
     chars.forEach(char => {
@@ -446,10 +453,7 @@ function createGridItems(chars, container, isCollectionMode) {
         const card = document.createElement('div');
         card.className = `result-card rarity-${char.rarity}`;
         
-        let badgeHtml = '';
-        if (isCollectionMode) {
-            badgeHtml = `<div class="char-count-badge">×${count}</div>`;
-        }
+        let badgeHtml = isCollectionMode ? `<div class="char-count-badge">×${count}</div>` : '';
 
         card.innerHTML = `
             <img src="character/${char.id}.png" onerror="this.src='character/${char.id}.jpg'" class="char-img">
@@ -464,22 +468,27 @@ function createGridItems(chars, container, isCollectionMode) {
         `;
 
         card.addEventListener('click', (e) => {
-            playSE('click');
+            if (typeof playSE === 'function') playSE('click');
             e.stopPropagation();
+            
             modalImg.src = `character/${char.id}.png`;
             modalImg.onerror = function () { this.src = `character/${char.id}.jpg`; };
             modalRarity.innerHTML = `<img src="rarity/${char.rarity}.png" onerror="this.src='rarity/${char.rarity}.jpg'" class="rarity-icon-large rarity-${char.rarity}">`;
             modalTitle.textContent = char.title;
             modalName.textContent = char.name;
+            
+            if (setHomeBtn) {
+                setHomeBtn.style.display = isCollectionMode ? 'block' : 'none';
+            }
             imageModal.classList.remove('hidden');
         });
         container.appendChild(card);
     });
 }
 
-function resetToTitle() {
-    stoneDisplay.classList.remove('hidden');
+function resetToGacha() {
+    stoneDisplay.style.display = 'flex';
     resultScreen.classList.add('hidden');
-    mainScreen.classList.remove('hidden');
+    changeScreen('gacha');
     resetAutoSlide();
 }
