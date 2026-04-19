@@ -13,357 +13,225 @@ body {
 }
 .hidden { display: none !important; }
 
+/* 画面共通設定 */
+.screen { display: none; }
+#main-screen.screen { display: none; }
+
 /* ==========================================
-   2. メイン画面レイアウト
+   2. ★ホーム画面レイアウト
    ========================================== */
-.gacha-container {
-    background-color: transparent; 
-    width: 100%; max-width: 1400px;
-    height: 90vh;
-    display: flex;
+#home-screen {
     flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    position: relative; z-index: 10;
-}
-
-/* ガチャタイトル */
-.gacha-title-container {
-    width: 100%; text-align: center;
-    margin-bottom: 10px;
-    z-index: 20;
-}
-#current-gacha-title {
-    display: inline-block;
-    background: linear-gradient(90deg, transparent, #000, transparent);
-    color: #fff;
-    padding: 10px 60px;
-    font-size: 24px; 
-    font-weight: bold;
-    border-top: 2px solid #4a90e2;
-    border-bottom: 2px solid #4a90e2;
-    text-shadow: 0 0 10px #4a90e2;
-    margin: 0;
-}
-
-/* バナーエリア */
-.banner-wrapper {
-    position: relative;
-    width: 100%;
-    height: 600px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-bottom: 20px;
-}
-
-.banner-content {
-    width: 90%;
-    height: 100%;
-    position: relative;
-    border-radius: 10px;
-    overflow: hidden;
-    box-shadow: 0 0 20px rgba(0,0,0,0.8);
-    border: 2px solid #444;
+    justify-content: flex-end; /* ナビゲーションを一番下に固定 */
+    width: 100vw; height: 100vh;
     background: #000;
+    position: relative;
+    z-index: 5;
 }
 
-#banner-img {
+/* ★修正：背景キャラを全画面に固定 */
+.home-main-visual {
+    position: absolute; top: 0; left: 0;
     width: 100%; height: 100%;
-    object-fit: cover;
-    display: block;
-    mask-image: linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%);
-    -webkit-mask-image: linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%);
+    z-index: -1; /* 一番後ろに配置 */
 }
 
-.banner-overlay {
-    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+/* ★修正：アニメーション削除＆全画面カバー */
+#home-char-img {
+    width: 100%; height: 100%;
+    object-fit: cover; /* 画像を画面いっぱいに広げる */
     pointer-events: none;
 }
 
-#banner-rarity {
-    position: absolute;
-    bottom: 40px; left: 50px;
-}
-#banner-rarity img {
-    height: 120px; width: auto;
-    filter: drop-shadow(0 2px 5px rgba(0,0,0,0.8));
+/* 光の演出用エフェクト（画像の少し上に被せて文字を見やすくする） */
+.home-bg-effect {
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+    background: radial-gradient(circle at center, rgba(0,0,0,0) 0%, rgba(0,0,0,0.5) 100%);
+    pointer-events: none; z-index: 0;
 }
 
-/* URのオーラ */
-img.rarity-UR {
-    filter: drop-shadow(0 0 5px #d000ff) drop-shadow(0 0 10px #d000ff);
-    animation: pulseUR 2s infinite alternate;
+/* ★修正：ヘッダー部分 */
+.home-header {
+    position: absolute; top: 0; left: 0; width: 100%;
+    padding: 20px; box-sizing: border-box;
+    z-index: 100; pointer-events: none;
 }
 
-.banner-text-group {
-    position: absolute;
-    bottom: 40px;
-    left: 280px;
-    text-align: left;
-}
-#banner-title {
-    font-size: 24px; color: #fff; 
-    text-shadow: 2px 2px 4px #000;
-    margin-bottom: 0;
-}
-#banner-name {
-    font-size: 80px; font-weight: 900; color: white;
-    line-height: 1.0;
-    text-shadow: 3px 3px 0 #333, -2px -2px 0 #333, 4px 4px 10px rgba(0,0,0,0.8);
+/* 設定ボタンと名前を左上に並べる */
+.header-left {
+    display: flex; align-items: center; gap: 15px;
 }
 
-.banner-desc-box {
-    position: absolute;
-    bottom: 150px; right: 50px;
-    width: 400px;
-    background-color: rgba(20, 60, 90, 0.85);
-    border: 2px solid #333;
-    color: white;
-    padding: 20px;
-    text-align: left;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+/* ユーザー情報 */
+.user-info-box {
+    background: rgba(16, 74, 110, 0.7);
+    backdrop-filter: blur(5px);
+    color: white; padding: 10px 30px; border-radius: 30px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    font-size: 20px; font-weight: bold; pointer-events: auto;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.5); text-shadow: 1px 1px 2px black;
 }
+
+/* 設定ボタン */
+.settings-menu-btn {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(5px); color: white;
+    width: 50px; height: 50px; border-radius: 50%;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    font-size: 24px; font-weight: bold; display: flex;
+    justify-content: center; align-items: center;
+    cursor: pointer; pointer-events: auto; transition: 0.3s;
+}
+.settings-menu-btn:hover { background: rgba(255,255,255,0.3); transform: rotate(90deg); }
+
+/* 下部ナビゲーション */
+.bottom-nav {
+    display: flex; height: 80px;
+    background: linear-gradient(to top, #051925 0%, #0a2e45 100%);
+    z-index: 100; border-top: 2px solid #4a90e2; box-shadow: 0 -5px 20px rgba(0,0,0,0.5);
+}
+
+.nav-btn {
+    flex: 1; background: transparent; color: #a0c4d8; border: none;
+    border-right: 1px solid rgba(255,255,255,0.1); font-size: 16px; font-weight: bold;
+    cursor: pointer; transition: 0.3s; text-shadow: 1px 1px 2px black;
+}
+.nav-btn:hover { background: rgba(74, 144, 226, 0.2); color: white; text-shadow: 0 0 10px #4a90e2; }
+.nav-btn:active { background: rgba(74, 144, 226, 0.5); }
+.nav-btn.battle-btn {
+    flex: 1.2; background: linear-gradient(135deg, #cc2b5e, #753a88);
+    color: white; font-size: 24px; border: none; box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
+}
+.nav-btn.battle-btn:hover { filter: brightness(1.2); }
+
+
+/* ==========================================
+   3. ガチャ画面レイアウト
+   ========================================== */
+.gacha-container {
+    background-color: transparent; 
+    width: 100%; max-width: 1400px; height: 90vh;
+    display: flex; flex-direction: column; justify-content: center; align-items: center;
+    position: relative; z-index: 10;
+}
+
+.back-to-home-btn {
+    position: absolute; top: 20px; left: 20px; background: rgba(16, 74, 110, 0.8);
+    backdrop-filter: blur(5px); color: white; border: 1px solid rgba(255,255,255,0.3);
+    padding: 10px 20px; border-radius: 20px; font-size: 16px; font-weight: bold;
+    cursor: pointer; z-index: 50; box-shadow: 2px 2px 5px rgba(0,0,0,0.5); transition: 0.2s;
+}
+.back-to-home-btn:hover { background: rgba(30, 126, 184, 0.9); }
+
+.gacha-title-container { width: 100%; text-align: center; margin-bottom: 10px; z-index: 20; }
+#current-gacha-title {
+    display: inline-block; background: linear-gradient(90deg, transparent, #000, transparent);
+    color: #fff; padding: 10px 60px; font-size: 24px; font-weight: bold;
+    border-top: 2px solid #4a90e2; border-bottom: 2px solid #4a90e2; text-shadow: 0 0 10px #4a90e2; margin: 0;
+}
+
+.banner-wrapper { position: relative; width: 100%; height: 600px; display: flex; justify-content: center; align-items: center; margin-bottom: 20px; }
+.banner-content { width: 90%; height: 100%; position: relative; border-radius: 10px; overflow: hidden; box-shadow: 0 0 20px rgba(0,0,0,0.8); border: 2px solid #444; background: #000; }
+#banner-img { width: 100%; height: 100%; object-fit: cover; display: block; mask-image: linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%); -webkit-mask-image: linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%); }
+.banner-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; }
+#banner-rarity { position: absolute; bottom: 40px; left: 50px; }
+#banner-rarity img { height: 120px; width: auto; filter: drop-shadow(0 2px 5px rgba(0,0,0,0.8)); }
+img.rarity-UR { filter: drop-shadow(0 0 5px #d000ff) drop-shadow(0 0 10px #d000ff); animation: pulseUR 2s infinite alternate; }
+
+.banner-text-group { position: absolute; bottom: 40px; left: 280px; text-align: left; }
+#banner-title { font-size: 24px; color: #fff; text-shadow: 2px 2px 4px #000; margin-bottom: 0; }
+#banner-name { font-size: 80px; font-weight: 900; color: white; line-height: 1.0; text-shadow: 3px 3px 0 #333, -2px -2px 0 #333, 4px 4px 10px rgba(0,0,0,0.8); }
+.banner-desc-box { position: absolute; bottom: 150px; right: 50px; width: 400px; background-color: rgba(20, 60, 90, 0.85); border: 2px solid #333; color: white; padding: 20px; text-align: left; box-shadow: 0 4px 10px rgba(0,0,0,0.5); }
 #banner-desc { margin: 0; font-size: 16px; line-height: 1.5; }
+.banner-period-box { position: absolute; bottom: 40px; right: 50px; background-color: rgba(20, 60, 90, 0.95); border: 1px solid #555; padding: 10px 30px; color: #aaddff; font-weight: bold; font-size: 18px; }
 
-.banner-period-box {
-    position: absolute;
-    bottom: 40px; right: 50px;
-    background-color: rgba(20, 60, 90, 0.95);
-    border: 1px solid #555;
-    padding: 10px 30px;
-    color: #aaddff;
-    font-weight: bold;
-    font-size: 18px;
-}
-
-.nav-arrow {
-    background: transparent; border: none; cursor: pointer; padding: 0;
-    width: 60px; height: 100px;
-    display: flex; justify-content: center; align-items: center;
-    transition: transform 0.2s; z-index: 20;
-}
+.nav-arrow { background: transparent; border: none; cursor: pointer; padding: 0; width: 60px; height: 100px; display: flex; justify-content: center; align-items: center; transition: transform 0.2s; z-index: 20; }
 .nav-arrow:hover { transform: scale(1.1); }
 .nav-arrow:active { transform: scale(0.95); }
-
-.arrow-shape {
-    display: block; width: 30px; height: 30px;
-    border-top: 5px solid #333;
-    border-right: 5px solid #333;
-}
+.arrow-shape { display: block; width: 30px; height: 30px; border-top: 5px solid #333; border-right: 5px solid #333; }
 .left-arrow .arrow-shape { transform: rotate(-135deg); }
 .right-arrow .arrow-shape { transform: rotate(45deg); }
 
-/* ==========================================
-   操作ボタン
-   ========================================== */
-.controls {
-    display: flex; justify-content: center; gap: 40px;
-    width: 100%;
-}
-
-.gacha-btn {
-    border: none;
-    width: 280px; height: 80px;
-    cursor: pointer; color: white;
-    border-radius: 10px;
-    border: 2px solid rgba(0,0,0,0.3);
-    box-shadow: 0 5px 0 rgba(0,0,0,0.5);
-    transition: transform 0.1s, box-shadow 0.1s;
-    display: flex; flex-direction: column; justify-content: center; align-items: center;
-}
+.controls { display: flex; justify-content: center; gap: 40px; width: 100%; }
+.gacha-btn { border: none; width: 280px; height: 80px; cursor: pointer; color: white; border-radius: 10px; border: 2px solid rgba(0,0,0,0.3); box-shadow: 0 5px 0 rgba(0,0,0,0.5); transition: transform 0.1s, box-shadow 0.1s; display: flex; flex-direction: column; justify-content: center; align-items: center; }
 .gacha-btn:active { transform: translateY(5px); box-shadow: none; }
-
 .single-btn { background-color: #4CAF50; }
 .multi-btn  { background-color: #ff0000; }
 .list-btn   { background-color: #4a90e2; width: 120px; }
-
 .btn-label { font-size: 24px; font-weight: bold; }
 .btn-cost-row { display: flex; align-items: center; gap: 5px; margin-top: 2px; }
 .btn-cost-icon { width: 20px; height: 20px; }
 .cost-text { font-size: 16px; font-weight: bold; text-shadow: 1px 1px 1px rgba(0,0,0,0.5); }
 
-/* ==========================================
-   結果画面・コレクション画面（レイアウト修正）
-   ========================================== */
-/* ★修正：Flexレイアウトにして重なりを防ぐ */
-#result-screen, #collection-screen {
-    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-    background-color: rgba(0,0,0,0.95); z-index: 500;
-    
-    display: flex;
-    flex-direction: column; /* 縦並びにする */
-    /* overflow-y: auto; は下のGridに任せる */
-}
 
-/* ヘッダー・ボタン部分（固定エリア） */
-.collection-header, .collection-controls {
-    flex-shrink: 0; /* 縮まないように */
-    background-color: rgba(0,0,0,0.95); /* 背景色をつけて透けないように */
-    width: 100%;
-    z-index: 10;
-}
+/* ==========================================
+   4. 結果・コレクション画面
+   ========================================== */
+#result-screen, #collection-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.95); z-index: 500; display: flex; flex-direction: column; }
+.collection-header, .collection-controls { flex-shrink: 0; background-color: rgba(0,0,0,0.95); width: 100%; z-index: 10; }
 .collection-header { padding-top: 20px; margin: 0; text-align: center; color: white; }
 .collection-controls { padding: 10px 0; display: flex; justify-content: center; gap: 20px; }
-
-/* カード一覧エリア（スクロールエリア） */
-.result-grid {
-    flex-grow: 1; /* 残りのスペースを埋める */
-    overflow-y: auto; /* ここだけスクロールさせる */
-    
-    display: flex;
-    flex-wrap: wrap; 
-    justify-content: center;
-    align-content: flex-start; /* 上詰め */
-    
-    gap: 15px; 
-    padding: 20px;
-    width: 100%;
-    box-sizing: border-box;
-    -webkit-overflow-scrolling: touch;
-}
-
-.result-card {
-    flex-shrink: 0;
-    width: 200px; height: 300px; 
-    background: #222; border-radius: 12px;
-    overflow: hidden; position: relative; cursor: pointer;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.6);
-    transition: transform 0.2s; 
-    border: 4px solid #444;
-}
+.result-grid { flex-grow: 1; overflow-y: auto; display: flex; flex-wrap: wrap; justify-content: center; align-content: flex-start; gap: 15px; padding: 20px; width: 100%; box-sizing: border-box; -webkit-overflow-scrolling: touch; }
+.result-card { flex-shrink: 0; width: 200px; height: 300px; background: #222; border-radius: 12px; overflow: hidden; position: relative; cursor: pointer; box-shadow: 0 10px 30px rgba(0,0,0,0.6); transition: transform 0.2s; border: 4px solid #444; }
 .result-card:hover { transform: scale(1.05); z-index: 10; border-color: white; }
 .result-card .char-img { width: 100%; height: 100%; object-fit: cover; }
-
-.card-info-overlay {
-    position: absolute; bottom: 0; left: 0; width: 100%;
-    background: linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(0,0,0,0.8) 50%, transparent 100%);
-    padding: 15px 10px 10px; box-sizing: border-box;
-    display: flex; align-items: flex-end; gap: 10px;
-    transition: opacity 0.3s;
-}
+.card-info-overlay { position: absolute; bottom: 0; left: 0; width: 100%; background: linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(0,0,0,0.8) 50%, transparent 100%); padding: 15px 10px 10px; box-sizing: border-box; display: flex; align-items: flex-end; gap: 10px; transition: opacity 0.3s; }
 body.hide-info .card-info-overlay { opacity: 0; }
-
 .rarity-icon-small { width: 60px; height: auto; display: block; filter: drop-shadow(0 1px 3px rgba(0,0,0,0.8)); }
 .card-name-group { display: flex; flex-direction: column; text-align: left; }
 .card-title { font-size: 12px; color: #eee; line-height: 1.2; text-shadow: 1px 1px 2px rgba(0,0,0,0.8); }
 .card-name { font-size: 18px; font-weight: bold; color: white; line-height: 1.1; text-shadow: 2px 2px 4px rgba(0,0,0,0.9); }
-
 .rarity-SSR { border-color: #00ffd0; }
 .rarity-SR { border-color: #ffea00; }
 .rarity-R { border-color: #a7b4c4; }
 .rarity-UR { border-color: #d000ff; }
+.char-count-badge { position: absolute; top: 5px; right: 5px; background-color: rgba(0, 0, 0, 0.7); color: #fff; padding: 2px 8px; border-radius: 10px; font-weight: bold; font-size: 14px; border: 1px solid rgba(255, 255, 255, 0.5); z-index: 5; box-shadow: 0 2px 4px rgba(0,0,0,0.5); }
 
-/* 所持数バッジ */
-.char-count-badge {
-    position: absolute; top: 5px; right: 5px;
-    background-color: rgba(0, 0, 0, 0.7); color: #fff;
-    padding: 2px 8px; border-radius: 10px;
-    font-weight: bold; font-size: 14px;
-    border: 1px solid rgba(255, 255, 255, 0.5);
-    z-index: 5;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.5);
-}
 
 /* ==========================================
-   全画面演出
+   5. 全画面演出・モーダル
    ========================================== */
-#fullscreen-overlay {
-    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-    background: radial-gradient(circle, #ffffff 0%, #d0d0d0 100%);
-    z-index: 1000;
-    display: flex; justify-content: center; align-items: center;
-}
+#fullscreen-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(circle, #ffffff 0%, #d0d0d0 100%); z-index: 1000; display: flex; justify-content: center; align-items: center; }
 #fullscreen-img { width: 100%; height: 100%; object-fit: cover; display: block; }
-#skip-btn {
-    position: absolute; top: 40px; right: 40px;
-    background: rgba(0, 0, 0, 0.5); border: 2px solid rgba(255,255,255,0.8);
-    color: white; padding: 15px 40px;
-    font-size: 24px; cursor: pointer; z-index: 1001;
-}
-
-#flash-effect {
-    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-    pointer-events: none; opacity: 0; z-index: 1002;
-}
+#skip-btn { position: absolute; top: 40px; right: 40px; background: rgba(0, 0, 0, 0.5); border: 2px solid rgba(255,255,255,0.8); color: white; padding: 15px 40px; font-size: 24px; cursor: pointer; z-index: 1001; }
+#flash-effect { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; opacity: 0; z-index: 1002; }
 .play-flash { animation: flashAnim 1.0s ease-out forwards; }
 @keyframes flashAnim { 0% { opacity: 1; } 60% { opacity: 1; } 100% { opacity: 0; } }
-
 .flash-SSR { background-color: #00ffd0; box-shadow: inset 0 0 200px #fff; mix-blend-mode: hard-light; }
 .flash-SR  { background-color: #ffea00; }
 .flash-R   { background-color: #a7b4c4; }
 .flash-UR  { background: linear-gradient(45deg, rgba(255,0,0,0.8), rgba(255,165,0,0.8), rgba(255,255,0,0.8), rgba(0,128,0,0.8), rgba(0,0,255,0.8), rgba(75,0,130,0.8), rgba(238,130,238,0.8)); background-size: 200% 200%; animation: rainbowFlash 1s ease-out forwards; box-shadow: inset 0 0 300px #fff; }
 @keyframes rainbowFlash { 0% { opacity: 1; background-position: 0% 50%; } 50% { opacity: 1; background-position: 100% 50%; } 100% { opacity: 0; } }
-
 @keyframes shake-hard { 0% { transform: translate(0, 0) scale(1.1); } 10% { transform: translate(-10px, -10px) scale(1.1); } 20% { transform: translate(10px, 10px) scale(1.1); } 30% { transform: translate(-10px, 10px) scale(1.1); } 40% { transform: translate(10px, -10px) scale(1.1); } 50% { transform: translate(0, 0) scale(1.1); } 100% { transform: translate(0, 0) scale(1); } }
 .effect-shake { animation: shake-hard 0.5s ease-out forwards; }
 @keyframes pop-in { 0% { transform: scale(1.5); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
 .effect-pop { animation: pop-in 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
-
-#fullscreen-text-container {
-    position: absolute; bottom: 8%; left: 5%;
-    display: flex; align-items: flex-end; gap: 40px;
-    z-index: 1001;
-}
-.rarity-icon-large {
-    height: 220px; width: auto; display: block;
-    filter: drop-shadow(0 2px 5px rgba(0,0,0,0.8));
-}
+#fullscreen-text-container { position: absolute; bottom: 8%; left: 5%; display: flex; align-items: flex-end; gap: 40px; z-index: 1001; }
+.rarity-icon-large { height: 220px; width: auto; display: block; filter: drop-shadow(0 2px 5px rgba(0,0,0,0.8)); }
 .rarity-icon-large.rarity-UR { height: auto !important; width: 300px; max-height: 220px; }
-
 .fs-name-group { display: flex; flex-direction: column; align-items: flex-start; }
-#fs-title { 
-    font-size: 40px; color: #eee; margin-bottom: 5px; opacity: 0; 
-    text-shadow: 2px 2px 4px rgba(0,0,0,0.8); font-weight: bold;
-}
-#fs-name { 
-    font-size: 110px; font-weight: 900; color: white; line-height: 1.0; opacity: 0;
-    text-shadow: 0 0 5px #000, 0 0 10px #000, 0 0 15px #000, 3px 3px 5px rgba(0,0,0,1);
-}
+#fs-title { font-size: 40px; color: #eee; margin-bottom: 5px; opacity: 0; text-shadow: 2px 2px 4px rgba(0,0,0,0.8); font-weight: bold; }
+#fs-name { font-size: 110px; font-weight: 900; color: white; line-height: 1.0; opacity: 0; text-shadow: 0 0 5px #000, 0 0 10px #000, 0 0 15px #000, 3px 3px 5px rgba(0,0,0,1); }
 .slide-in { animation: slideInLeft 0.5s ease-out forwards; }
 .slide-in-delay-1 { animation: slideInLeft 0.5s ease-out 0.1s forwards; }
 .slide-in-delay-2 { animation: slideInLeft 0.5s ease-out 0.2s forwards; }
 @keyframes slideInLeft { from { opacity: 0; transform: translateX(-50px); } to { opacity: 1; transform: translateX(0); } }
 
-/* ==========================================
-   モーダル
-   ========================================== */
-#image-modal {
-    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-    background: rgba(0,0,0,0.9); z-index: 2000;
-    display: flex; justify-content: center; align-items: center;
-}
+#image-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 2000; display: flex; justify-content: center; align-items: center; }
 #modal-img { width: 100%; height: 100%; object-fit: cover; }
-#modal-text-container {
-    position: absolute; bottom: 8%; left: 5%;
-    display: flex; align-items: flex-end; gap: 40px;
-    pointer-events: none; transition: opacity 0.3s;
-}
+#modal-text-container { position: absolute; bottom: 8%; left: 5%; display: flex; align-items: flex-end; gap: 40px; transition: opacity 0.3s; }
 body.hide-info #modal-text-container { opacity: 0; }
-.modal-name-group { display: flex; flex-direction: column; align-items: flex-start; }
-#modal-title { 
-    font-size: 40px; color: #eee; margin-bottom: 5px; font-weight: bold;
-    text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
-}
-#modal-name { 
-    font-size: 110px; font-weight: 900; color: white; line-height: 1.0;
-    text-shadow: 0 0 5px #000, 0 0 10px #000, 0 0 15px #000, 3px 3px 5px rgba(0,0,0,1);
-}
+.modal-name-group { display: flex; flex-direction: column; align-items: flex-start; pointer-events: none;}
+#modal-title { font-size: 40px; color: #eee; margin-bottom: 5px; font-weight: bold; text-shadow: 2px 2px 4px rgba(0,0,0,0.8); }
+#modal-name { font-size: 110px; font-weight: 900; color: white; line-height: 1.0; text-shadow: 0 0 5px #000, 0 0 10px #000, 0 0 15px #000, 3px 3px 5px rgba(0,0,0,1); }
 
-/* アニメーション */
-@keyframes pulseUR {
-    0% { filter: drop-shadow(0 0 5px #d000ff) drop-shadow(0 0 10px #d000ff); }
-    100% { filter: drop-shadow(0 0 15px #ff00ff) drop-shadow(0 0 25px #ff00ff); }
-}
 
 /* ==========================================
-   6. スマホ・タブレット対応（レスポンシブ）
+   6. スマホ対応
    ========================================== */
-
 #rotate-warning { display: none; }
-
 @media screen and (orientation: portrait) {
-    .gacha-container, #stone-display, #fullscreen-overlay, #result-screen, #collection-screen, #shop-modal { display: none !important; }
+    .gacha-container, #stone-display, #fullscreen-overlay, #result-screen, #collection-screen, #shop-modal, #home-screen { display: none !important; }
     #rotate-warning { display: flex; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background-color: #222; color: white; justify-content: center; align-items: center; z-index: 9999; text-align: center; }
     .warning-content p { font-size: 20px; margin: 10px; font-weight: bold; }
 }
@@ -375,82 +243,138 @@ body.hide-info #modal-text-container { opacity: 0; }
     .banner-wrapper { height: 55vh; margin-bottom: 5px; }
     #banner-name { font-size: 40px; }
     #banner-title { font-size: 14px; }
-    
     #banner-rarity { left: 10px; bottom: 10px; }
     #banner-rarity img { height: 60px; }
     .banner-text-group { left: 140px; bottom: 10px; }
     .banner-desc-box, .banner-period-box { display: none; }
-
     .controls { gap: 10px; margin-top: 5px; }
     .gacha-btn { width: 140px; height: 50px; border-radius: 5px; }
     .btn-label { font-size: 14px; }
     .btn-cost-icon { width: 14px; height: 14px; }
     .cost-text { font-size: 12px; }
-
-    /* 結果画面 (スマホ用グリッド表示) */
-    .result-grid { 
-        padding: 10px; 
-        gap: 5px; 
-        align-content: flex-start;
-        /* ボタンと重ならないように上部に余白を少し追加 */
-        padding-top: 10px; 
-    }
-    .result-card { 
-        width: 18vw; height: 27vw; 
-        max-width: 100px; max-height: 150px;
-    }
+    .result-grid { padding: 10px; gap: 5px; align-content: flex-start; padding-top: 10px; }
+    .result-card { width: 18vw; height: 27vw; max-width: 100px; max-height: 150px; }
     .rarity-icon-small { width: 40px; }
     .card-title { font-size: 8px; }
     .card-name { font-size: 10px; }
     .char-count-badge { font-size: 10px; top: 2px; right: 2px; }
-
-    /* 全画面・モーダル調整 */
     .rarity-icon-large { height: 100px; }
     .rarity-icon-large.rarity-UR { height: auto !important; max-height: 100px; width: 140px; }
     #fs-name, #modal-name { font-size: 50px; }
     #fs-title, #modal-title { font-size: 20px; }
     #fullscreen-text-container, #modal-text-container { bottom: 5%; left: 5%; gap: 10px; }
 }
+
 /* ==========================================
-   ★追加：ロード画面
+   7. ロード画面
    ========================================== */
 #loading-screen {
-    position: fixed;
-    top: 0; left: 0;
-    width: 100vw; height: 100vh;
-    background-color: #000; /* 背景は黒 */
-    z-index: 9999; /* 最前面 */
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    color: white;
-    transition: opacity 0.5s ease-out; /* フェードアウト用 */
+    position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+    background-color: #000; z-index: 9999; display: flex; flex-direction: column;
+    justify-content: center; align-items: center; color: white; transition: opacity 0.5s ease-out;
 }
-
-/* くるくる回るローディングアイコン */
 .loader {
-    border: 8px solid #333;
-    border-top: 8px solid #4a90e2; /* 水色 */
-    border-radius: 50%;
-    width: 60px; height: 60px;
-    animation: spin 1s linear infinite;
-    margin-bottom: 20px;
+    border: 8px solid #333; border-top: 8px solid #4a90e2; border-radius: 50%;
+    width: 60px; height: 60px; animation: spin 1s linear infinite; margin-bottom: 20px;
+}
+@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+#loading-text { font-size: 20px; font-weight: bold; font-family: monospace; }
+.fade-out { opacity: 0; pointer-events: none; }
+/* ==========================================
+   ★追加：タイトル画面
+   ========================================== */
+#title-screen {
+    position: relative;
+    width: 100vw; height: 100vh;
+    justify-content: center; align-items: center;
+    background-color: #000;
+    z-index: 200;
+}
+.title-bg {
+    position: absolute; top: 0; left: 0;
+    width: 100%; height: 100%;
+    object-fit: contain; /* 画像全体が綺麗に見えるようにする */
+    z-index: 1;
+}
+.touch-to-start {
+    position: absolute; bottom: 15%;
+    font-size: 36px; font-weight: bold; color: white;
+    text-shadow: 0 0 10px rgba(160, 100, 255, 0.8), 0 0 20px rgba(100, 200, 255, 0.8);
+    z-index: 10; cursor: pointer; padding: 20px 50px;
+    animation: blink 1.5s infinite;
+}
+@keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
 }
 
-@keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+/* タイトル画面の設定ボタン */
+.settings-btn {
+    position: absolute; top: 20px; right: 20px;
+    background: rgba(0,0,0,0.5); border: 2px solid rgba(255,255,255,0.5);
+    border-radius: 50%; width: 60px; height: 60px;
+    font-size: 30px; color: white; display: flex;
+    justify-content: center; align-items: center;
+    cursor: pointer; z-index: 20; transition: 0.3s;
+}
+.settings-btn:hover {
+    transform: rotate(90deg); background: rgba(255,255,255,0.3);
+}
+/* ==========================================
+   修正：ホーム画面レイアウト（明るくする）
+   ========================================== */
+#home-screen {
+    flex-direction: column;
+    justify-content: flex-end; 
+    width: 100vw; height: 100vh;
+    /* ★修正：背景を黒から白に変更（透過画像でも暗くならないように） */
+    background: #ffffff; 
+    position: relative;
+    z-index: 5;
 }
 
-#loading-text {
-    font-size: 20px;
-    font-weight: bold;
-    font-family: monospace;
+/* 光の演出用エフェクト */
+.home-bg-effect {
+    /* ★修正：完全に消すことで、元の画像の明るさを保つ */
+    display: none !important; 
 }
 
-/* ロード完了時に消すためのクラス */
-.fade-out {
-    opacity: 0;
+/* メインキャラの表示設定 */
+#home-char-img {
+    width: 100%; height: 100%;
+    /* 画面いっぱいに広げつつ、明るさは元画像のまま */
+    object-fit: cover; 
     pointer-events: none;
+    background-color: transparent; /* 背景を透明にする */
+}
+/* ==========================================
+   追加：ログイン通知トースト（ポップアップ）
+   ========================================== */
+#login-toast {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(16, 74, 110, 0.95);
+    backdrop-filter: blur(5px);
+    color: white;
+    padding: 10px 30px;
+    border-radius: 30px;
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    font-size: 16px;
+    font-weight: bold;
+    z-index: 4000;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+    transition: opacity 0.5s ease, top 0.5s ease;
+    pointer-events: none; /* タップの邪魔にならないようにする */
+}
+
+.toast-hidden {
+    opacity: 0;
+    top: -50px !important; /* 画面外に隠す */
+}
+
+.toast-visible {
+    opacity: 1;
+    top: 20px !important; /* 画面内にスライドイン */
 }

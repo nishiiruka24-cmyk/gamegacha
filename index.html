@@ -8,6 +8,8 @@
     <link rel="stylesheet" href="money.css">
 </head>
 <body onclick="tryPlayBGM()">
+    <div id="login-toast" class="toast-hidden"></div>
+
     <div id="loading-screen">
         <div class="loader"></div>
         <p id="loading-text">Loading... 0%</p>
@@ -21,47 +23,100 @@
         </div>
     </div>
 
-    <div id="stone-display">
+    <div id="stone-display" style="display: none;">
         <img src="isi/isi.png" alt="石">
         <span id="stone-count">0</span>
         <button id="add-stone-btn">+</button>
     </div>
 
-    <div class="gacha-container" id="main-screen">
+    <div id="title-screen" class="screen" onclick="startGame()">
+        <img src="haikei/101.png" class="title-bg" alt="Title Logo" onerror="this.src='haikei/101.jpg'">
+        <button id="title-settings-btn" class="settings-btn">⚙️</button>
+        <div class="touch-to-start">TOUCH TO START</div>
+    </div>
+
+    <div id="settings-modal" class="hidden" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.85); z-index: 3000; display: flex; justify-content: center; align-items: center;">
+        <div class="shop-content">
+            <h2>設定</h2>
+            <div class="age-buttons">
+                <button id="btn-open-auth">アカウント連携</button>
+                <button id="btn-return-title" style="display: none;">タイトルへ戻る</button>
+                <button id="btn-exit-game" style="display: none; background-color: #ff4444; color: white;">ゲームを終了する</button>
+                <button id="btn-close-settings">閉じる</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="auth-modal" class="hidden" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.85); z-index: 3000; display: flex; justify-content: center; align-items: center;">
+        <div class="shop-content">
+            <button id="btn-close-auth" class="shop-back-btn">戻る</button>
+            <h2>アカウント連携</h2>
+            <div id="auth-status-text" style="margin-bottom: 15px; font-weight: bold; font-size: 18px;"></div>
+            
+            <div class="credit-card-form" id="auth-form">
+                <label>メールアドレス</label>
+                <input type="email" id="auth-email" placeholder="example@mail.com">
+                <label>パスワード</label>
+                <input type="password" id="auth-password" placeholder="********">
+                
+                <div style="display: flex; gap: 10px; margin-top: 15px;">
+                    <button id="btn-register" class="pay-btn" style="background:#4CAF50;">新規登録</button>
+                    <button id="btn-login" class="pay-btn">ログイン</button>
+                </div>
+            </div>
+            
+            <div style="margin-top: 20px; display: flex; gap: 10px; justify-content: center;">
+                <button id="btn-logout" class="pay-btn" style="background:#f39c12; display:none;">ログアウト</button>
+                <button id="btn-delete-account" class="pay-btn" style="background:#ff4444; display:none;">アカウント削除</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="home-screen" class="screen">
+        <div class="home-main-visual">
+            <img src="character/001.png" onerror="this.src='character/001.jpg'" id="home-char-img">
+        </div>
+        <div class="home-bg-effect"></div>
+
+        <div class="home-header">
+            <div class="header-left">
+                <button id="home-settings-btn" class="settings-menu-btn">≡</button>
+                <div class="user-info-box">名前とランク</div>
+            </div>
+        </div>
+
+        <nav class="bottom-nav">
+            <button class="nav-btn" onclick="alert('未実装です')">ミッション</button>
+            <button class="nav-btn" onclick="showCollectionScreen()">キャラクター</button>
+            <button class="nav-btn" onclick="alert('未実装です')">編成</button>
+            <button class="nav-btn" onclick="alert('未実装です')">コミュニティ</button>
+            <button class="nav-btn" onclick="changeScreen('gacha')">ガチャ</button>
+            <button class="nav-btn battle-btn" onclick="alert('未実装です')">バトル</button>
+        </nav>
+    </div>
+
+    <div class="gacha-container screen" id="main-screen">
+        <button onclick="changeScreen('home')" class="back-to-home-btn">◀ ホーム</button>
 
         <div class="gacha-title-container">
             <h2 id="current-gacha-title">ガチャ名読み込み中...</h2>
         </div>
 
         <div class="banner-wrapper">
-            <button id="banner-prev" class="nav-arrow left-arrow">
-                <span class="arrow-shape"></span>
-            </button>
-
+            <button id="banner-prev" class="nav-arrow left-arrow"><span class="arrow-shape"></span></button>
             <div class="banner-content">
                 <img id="banner-img" src="" alt="Pickup Character">
-                
                 <div class="banner-overlay">
                     <div id="banner-rarity"></div>
-                    
                     <div class="banner-text-group">
                         <div id="banner-title"></div>
                         <div id="banner-name"></div>
                     </div>
-
-                    <div class="banner-desc-box">
-                        <p id="banner-desc"></p>
-                    </div>
-
-                    <div class="banner-period-box">
-                        <span id="banner-period"></span>
-                    </div>
+                    <div class="banner-desc-box"><p id="banner-desc"></p></div>
+                    <div class="banner-period-box"><span id="banner-period"></span></div>
                 </div>
             </div>
-
-            <button id="banner-next" class="nav-arrow right-arrow">
-                <span class="arrow-shape"></span>
-            </button>
+            <button id="banner-next" class="nav-arrow right-arrow"><span class="arrow-shape"></span></button>
         </div>
 
         <div class="controls">
@@ -72,7 +127,6 @@
                     <span class="cost-text" id="cost-text-1">150</span>
                 </div>
             </button>
-            
             <button id="draw-10-btn" class="gacha-btn multi-btn">
                 <span class="btn-label">10 連</span>
                 <div class="btn-cost-row">
@@ -80,10 +134,8 @@
                     <span class="cost-text" id="cost-text-10">1500</span>
                 </div>
             </button>
-            
-            <button id="collection-btn" class="gacha-btn list-btn">一覧</button>
+            <button id="lineup-btn" class="gacha-btn list-btn">排出一覧</button>
         </div>
-
     </div>
 
     <div id="result-screen" class="hidden">
@@ -102,6 +154,16 @@
         <div class="result-grid" id="collection-grid"></div>
     </div>
 
+    <div id="lineup-screen" class="hidden" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.95); z-index: 500; display: flex; flex-direction: column;">
+        <div class="collection-header">
+            <h2>ガチャ排出キャラクター</h2>
+            <div class="collection-controls">
+                <button id="lineup-back-btn" class="sub-btn back-btn">戻る</button>
+            </div>
+        </div>
+        <div class="result-grid" id="lineup-grid" style="flex-grow: 1; overflow-y: auto;"></div>
+    </div>
+
     <div id="fullscreen-overlay" class="hidden">
         <button id="skip-btn">SKIP >></button>
         <div id="flash-effect"></div>
@@ -116,6 +178,7 @@
     </div>
 
     <div id="image-modal" class="hidden">
+        <button id="modal-close-btn" class="shop-back-btn" style="z-index: 2001;">閉じる</button>
         <img id="modal-img" src="">
         <div id="modal-text-container">
             <div id="modal-rarity"></div>
@@ -123,13 +186,13 @@
                 <div id="modal-title"></div>
                 <div id="modal-name"></div>
             </div>
+            <button id="set-home-btn" class="pay-btn" style="width: auto; padding: 10px 20px; margin-left: 20px; pointer-events: auto;">ホームに設定</button>
         </div>
     </div>
 
     <div id="shop-modal" class="hidden">
         <div class="shop-content">
             <button id="shop-close-btn" class="shop-back-btn">戻る</button>
-            
             <div id="shop-step-age">
                 <h2>年齢確認</h2>
                 <div class="age-buttons">
@@ -138,12 +201,10 @@
                     <button onclick="setAgeLimit(2)">20歳以上 (上限なし)</button>
                 </div>
             </div>
-
             <div id="shop-step-product" class="hidden">
                 <h2>魔法石ショップ</h2>
                 <div class="product-grid"></div>
             </div>
-
             <div id="shop-step-payment" class="hidden">
                 <h2>お支払い</h2>
                 <p id="payment-target-info"></p>
@@ -159,9 +220,9 @@
             </div>
         </div>
     </div>
-    
 
     <script src="music.js"></script>
+    <script src="auth.js"></script> 
     <script src="money.js"></script>
     <script src="java.js"></script>
 </body>
