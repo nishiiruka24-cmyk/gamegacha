@@ -14,7 +14,7 @@ const authModal = document.getElementById('auth-modal');
 const titleSettingsBtn = document.getElementById('title-settings-btn');
 const homeSettingsBtn = document.getElementById('home-settings-btn'); 
 const btnReturnTitle = document.getElementById('btn-return-title');   
-const btnExitGame = document.getElementById('btn-exit-game'); // ★追加：終了ボタン
+const btnExitGame = document.getElementById('btn-exit-game'); 
 const btnOpenAuth = document.getElementById('btn-open-auth');
 
 const authEmailInput = document.getElementById('auth-email');
@@ -39,7 +39,7 @@ function showLoginToast() {
     }
 }
 
-// === 設定画面の開閉（タイトル） ===
+// === 設定画面の開閉 ===
 if (titleSettingsBtn) {
     titleSettingsBtn.addEventListener('click', (e) => {
         e.stopPropagation(); 
@@ -47,22 +47,20 @@ if (titleSettingsBtn) {
         settingsModal.classList.remove('hidden');
         if (btnOpenAuth) btnOpenAuth.style.display = 'block';
         if (btnReturnTitle) btnReturnTitle.style.display = 'none';
-        if (btnExitGame) btnExitGame.style.display = 'block'; // タイトルからでも終了可能に
+        if (btnExitGame) btnExitGame.style.display = 'block';
     });
 }
 
-// === 設定画面の開閉（ホーム画面用） ===
 if (homeSettingsBtn) {
     homeSettingsBtn.addEventListener('click', () => {
         if (typeof playSE === 'function') playSE('click');
         settingsModal.classList.remove('hidden');
         if (btnOpenAuth) btnOpenAuth.style.display = 'none';
         if (btnReturnTitle) btnReturnTitle.style.display = 'block';
-        if (btnExitGame) btnExitGame.style.display = 'block'; // ★追加：ホーム画面に終了ボタン表示
+        if (btnExitGame) btnExitGame.style.display = 'block';
     });
 }
 
-// === タイトルへ戻るボタン ===
 if (btnReturnTitle) {
     btnReturnTitle.addEventListener('click', () => {
         if (typeof playSE === 'function') playSE('click');
@@ -72,17 +70,12 @@ if (btnReturnTitle) {
     });
 }
 
-// === ★新規追加：ゲームを終了するボタン ===
 if (btnExitGame) {
     btnExitGame.addEventListener('click', () => {
         if (typeof playSE === 'function') playSE('click');
         if (confirm('ゲームを終了しますか？\n（現在の進行状況は自動的に保存されます）')) {
-            saveAccount(); // 確実にセーブを実行
-            
-            // ウィンドウ（タブ）を閉じる処理
+            saveAccount(); 
             window.close();
-            
-            // ブラウザの制限で閉じられなかった場合のアラート
             setTimeout(() => {
                 alert('ブラウザの仕様により自動で閉じられませんでした。\nお手数ですが、ブラウザのタブを手動で閉じて終了してください。');
             }, 500);
@@ -95,7 +88,6 @@ document.getElementById('btn-close-settings').addEventListener('click', () => {
     settingsModal.classList.add('hidden');
 });
 
-// === アカウント連携画面の開閉 ===
 if (btnOpenAuth) {
     btnOpenAuth.addEventListener('click', () => {
         if (typeof playSE === 'function') playSE('click');
@@ -110,27 +102,30 @@ document.getElementById('btn-close-auth').addEventListener('click', () => {
     authModal.classList.add('hidden');
 });
 
-// === アカウントの読み込み ===
+// === ★超重要：アカウントの読み込み（起動時に最速で実行） ===
 function loadAccount() {
     const sessionEmail = localStorage.getItem(CURRENT_SESSION_KEY);
     if (sessionEmail && usersDB[sessionEmail]) {
         currentUser = usersDB[sessionEmail];
         
+        // 石の復元
         if (currentUser.stones !== undefined && typeof userStones !== 'undefined') {
             userStones = currentUser.stones;
-            updateStoneDisplay();
         }
         
+        // コレクションの復元
         if (currentUser.collection !== undefined && typeof userCollection !== 'undefined') {
             userCollection.length = 0; 
             currentUser.collection.forEach(id => userCollection.push(id));
         }
         
+        // 所持数の復元
         if (currentUser.counts !== undefined && typeof characterCounts !== 'undefined') {
             for (let key in characterCounts) delete characterCounts[key]; 
             Object.assign(characterCounts, currentUser.counts);
         }
 
+        // 画面への反映
         const homeImg = document.getElementById('home-char-img');
         if (homeImg && currentUser.homeImage) {
             homeImg.src = currentUser.homeImage;
@@ -138,10 +133,15 @@ function loadAccount() {
             homeImg.src = 'character/001.png';
         }
 
+        if (typeof updateStoneDisplay === 'function') {
+            updateStoneDisplay();
+        }
+
         showLoginToast();
     }
 }
-window.addEventListener('load', loadAccount);
+// ページが読み込まれた瞬間に即座に実行する
+loadAccount();
 
 // === アカウントの保存 ===
 function saveAccount() {
@@ -159,6 +159,11 @@ function saveAccount() {
         localStorage.setItem(USERS_DB_KEY, JSON.stringify(usersDB));
     }
 }
+
+// === ★追加：リロード・タブ閉じ時の強制セーブ ===
+window.addEventListener('beforeunload', () => {
+    saveAccount(); // ページから離れる瞬間に絶対に保存する
+});
 
 // === 新規登録処理 ===
 document.getElementById('btn-register').addEventListener('click', () => {
@@ -292,7 +297,7 @@ function updateAuthUI() {
     }
 }
 
-// 石が増減した時、自動セーブ
+// ガチャや石の変動時に念のためセーブ
 if (typeof updateStoneDisplay === 'function') {
     const originalUpdateStoneDisplay = updateStoneDisplay;
     updateStoneDisplay = function() {
@@ -301,7 +306,6 @@ if (typeof updateStoneDisplay === 'function') {
     };
 }
 
-// キャラクターを獲得した直後に自動セーブ
 if (typeof addToCollection === 'function') {
     const originalAddToCollection = addToCollection;
     addToCollection = function(id) {

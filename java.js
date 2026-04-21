@@ -32,7 +32,12 @@ const characterList = [
     { id: '028', rarity: 'R', title: 'パティシエ見習い', name: 'ショコラ' },
     { id: '029', rarity: 'R', title: 'マジックの始まり', name: 'バロン' },
     { id: '030', rarity: 'R', title: 'ロックなギタリスト', name: 'ガイ' },
-    { id: '031', rarity: 'SR', title: '雷の一太刀', name: 'シオン' }
+    { id: '031', rarity: 'SR', title: '雷の一太刀', name: 'シオン' },
+    { id: '032', rarity: 'SSR', title: '裏切りの月明り', name: '愛'},
+    { id: '033', rarity: 'SR', title: '野を舞う三毛猫', name: 'ヨモギ' },
+    { id: '034', rarity: 'SSR', title: '誰だこいつ', name: 'シャナリーゼ・サントス' },
+    { id: '035', rarity: 'SR', title: '水を操る竜', name: 'アオイ' },
+
 ];
 
 const gachaBanners = [
@@ -41,7 +46,7 @@ const gachaBanners = [
         gachaTitle: '【期間限定】孤高に舞う雪猫ガチャ',
         cost: 150,
         rates: { UR: 3, SSR: 5, SR: 15, R: 77 },
-        pickupIds: ['025'], pickupRate: 1, excludedIds: [], 
+        pickupIds: ['025'], pickupRate: 1, excludedIds: ['032','033'], 
         desc: '猫耳の姿となったリノ。<br>氷山の中を駆け回る彼女を仲間にしよう！',
         period: '期間：無期限',
         visuals: [{ imgId: '025', title: '孤高に舞う雪猫', name: 'リノ（猫耳）' }]
@@ -51,7 +56,7 @@ const gachaBanners = [
         gachaTitle: '【日替わりピックアップ】氷結と稲妻ピックアップガチャ',
         cost: 150,
         rates: { SSR: 5, SR: 15, R: 80 },
-        pickupIds: ['003'], pickupRate: 0.7, excludedIds: ['025'], 
+        pickupIds: ['003'], pickupRate: 0.7, excludedIds: ['025','032','033'], 
         desc: '強力な氷と雷を操る少女。<br>強力な攻撃で敵を倒す彼女を仲間にしよう！',
         period: '期間：無期限',
         visuals: [{ imgId: '003', title: '氷結と稲妻の申子', name: 'リノ' }]
@@ -61,7 +66,7 @@ const gachaBanners = [
         gachaTitle: '【イベント】春花＆ソラ ダブルピックアップ',
         cost: 150,
         rates: { SSR: 5, SR: 15, R: 80 },
-        pickupIds: ['001', '002'], pickupRate: 0.5, excludedIds: ['025'], 
+        pickupIds: ['001', '002'], pickupRate: 0.5, excludedIds: ['025','032','033'], 
         desc: '春花とソラがダブルピックアップ！<br>二人の天才をチームに加えるチャンス。',
         period: '期間：無期限',
         visuals: [
@@ -74,7 +79,7 @@ const gachaBanners = [
         gachaTitle: '【祝】サービス開始記念ドリームフェス',
         cost: 150,
         rates: { SSR: 10, SR: 20, R: 70 },
-        pickupIds: [], pickupRate: 1, excludedIds: ['025'], 
+        pickupIds: [], pickupRate: 1, excludedIds: ['025','032','033'], 
         desc: 'SSR確率2倍！<br>最強のキャラたちを手に入れるチャンス。',
         period: '期間：無期限',
         visuals: [
@@ -82,7 +87,8 @@ const gachaBanners = [
             { imgId: '002', title: '実験開始の合図', name: 'ソラ' },
             { imgId: '003', title: '氷結と稲妻の申子', name: 'リノ' },
             { imgId: '013', title: '血色の女王', name: 'メア' },
-            { imgId: '023', title: '物語の始まりを告げる', name: 'ルルセア' }
+            { imgId: '023', title: '物語の始まりを告げる', name: 'ルルセア' },
+            { imgId: '034', title: '誰だこいつ', name: 'シャナリーゼ・サントス' }
         ]
     }
 ];
